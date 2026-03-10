@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Factor {
+  id         Int      @id @default(autoincrement())
+  title      String   @unique
+  score      Int
+  issueCount Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Asset {
+  id             Int      @id @default(autoincrement())
+  hostname       String   @unique
+  ipAddress      String?
+  type           String   // e.g., "domain", "ip", "subdomain"
+  isExposed      Boolean  @default(false)
+  discoveredAt   DateTime @default(now())
+  issues         Issue[]
+}
+
+model Issue {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  severity    String   // e.g., "Critical", "High", "Medium", "Low"
+  status      String   @default("Open") // "Open", "Resolved"
+  assetId     Int?
+  asset       Asset?   @relation(fields: [assetId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

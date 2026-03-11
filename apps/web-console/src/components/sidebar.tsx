@@ -24,12 +24,12 @@ export function Sidebar({ className, navigations }: SidebarProps) {
                 className
             )}
         >
-            {/* Collapse Toggle Button */}
+            {/* Collapse Toggle Button - customized to dark blue #0B1247 to match sidebar and slightly larger */}
             <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute -right-3 top-6 flex h-6 w-6 items-center justify-center rounded-full border border-[#1a237e]/50 bg-[#0B1247] shadow-md text-white/70 hover:text-white transition-colors z-30"
+                className="absolute -right-4 top-7 flex h-8 w-8 items-center justify-center rounded-full border border-[#1a237e]/50 bg-[#0B1247] shadow-md text-white/70 hover:text-white hover:bg-[#1a237e] transition-colors z-30"
             >
-                {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
+                {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </button>
 
             <div className="space-y-4 py-4 flex-1 overflow-hidden">

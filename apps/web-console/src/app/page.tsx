@@ -45,9 +45,9 @@ export default function DashboardPage() {
 
   if (loading || !data) {
     return (
-      <div className="flex min-h-screen">
+      <div className="flex h-screen overflow-hidden">
         <Sidebar navigations={navigations} />
-        <main className="flex-1 overflow-auto bg-muted/10 p-8 flex items-center justify-center">
+        <main className="flex-1 overflow-y-auto bg-muted/10 p-8 flex items-center justify-center">
           <p className="text-muted-foreground animate-pulse">Loading dashboard data...</p>
         </main>
       </div>
@@ -55,10 +55,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar navigations={navigations} />
 
-      <main className="flex-1 overflow-auto bg-muted/10 p-8">
+      <main className="flex-1 overflow-y-auto bg-muted/10 p-8">
         <div className="mx-auto max-w-6xl space-y-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Attack Surface Summary</h1>

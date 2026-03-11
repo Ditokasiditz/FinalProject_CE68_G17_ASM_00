@@ -207,7 +207,7 @@ export default function IssueFindingsPage() {
     const activeAsset = issue?.findings.find(f => f.assetId === activeCommentAssetId) ?? null
 
     return (
-        <div className="flex min-h-screen bg-background text-foreground">
+        <div className="flex h-screen overflow-hidden bg-background text-foreground">
             <Sidebar navigations={navigations} />
 
             {/* Comment popup */}
@@ -232,7 +232,7 @@ export default function IssueFindingsPage() {
                 />
             )}
 
-            <main className="flex-1 overflow-auto flex flex-col p-8 bg-muted/10">
+            <main className="flex-1 overflow-y-auto flex flex-col p-8 bg-muted/10">
                 {/* Back button */}
                 <button
                     onClick={() => router.back()}

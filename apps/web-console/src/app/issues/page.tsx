@@ -84,10 +84,10 @@ export default function IssuesPage() {
     }
 
     return (
-        <div className="flex min-h-screen bg-background text-foreground">
+        <div className="flex h-screen overflow-hidden bg-background text-foreground">
             <Sidebar navigations={navigations} />
 
-            <main className="flex-1 overflow-auto flex flex-col p-8 bg-muted/10">
+            <main className="flex-1 overflow-y-auto flex flex-col p-8 bg-muted/10">
                 <h2 className="text-4xl font-extrabold tracking-tight mb-8 mt-2">Issues</h2>
 
                 {/* Grade Summary Card Area */}

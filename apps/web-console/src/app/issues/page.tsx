@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from "react"
-import { LayoutDashboard, Users, ShieldAlert, Settings, Activity, ShieldCheck, ChevronDown } from "lucide-react"
+import { LayoutDashboard, Users, ShieldAlert, Settings, Activity, ShieldCheck, ChevronDown, X } from "lucide-react"
 import { Sidebar } from "@/components/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useRouter } from "next/navigation"
@@ -123,7 +123,7 @@ export default function IssuesPage() {
                 </div>
 
                 <div className="flex items-end justify-between mb-6">
-                    <div className="flex gap-4">
+                    <div className="flex items-end gap-4">
                         <div className="space-y-1.5">
                             <label className="text-xs font-semibold text-muted-foreground">Factor</label>
                             <select
@@ -146,11 +146,14 @@ export default function IssuesPage() {
                                 ))}
                             </select>
                         </div>
-                        <button
-                            onClick={() => { setSelectedFactor("All"); setSelectedSeverity("All") }}
-                            className="inline-flex h-10 items-center justify-center rounded-md bg-blue-600 px-6 text-sm font-medium text-white shadow transition-colors hover:bg-blue-700">
-                            Clear
-                        </button>
+                        {(selectedFactor !== "All" || selectedSeverity !== "All") && (
+                            <button
+                                onClick={() => { setSelectedFactor("All"); setSelectedSeverity("All") }}
+                                className="inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100">
+                                <X className="mr-2 h-4 w-4" />
+                                Clear
+                            </button>
+                        )}
                     </div>
 
                     <div className="flex items-center space-x-4">

@@ -5,6 +5,7 @@ import { LayoutDashboard, Users, ShieldAlert, Settings, Activity, ShieldCheck } 
 import { Sidebar } from "@/components/sidebar"
 import { ScoreGrade } from "@/components/score-grade"
 import { FactorBreakdown } from "@/components/factor-breakdown"
+import { SeverityPieChart } from "@/components/severity-pie-chart"
 
 interface Factor {
   title: string
@@ -70,6 +71,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-6 md:grid-cols-2">
             <ScoreGrade score={data.score} grade={data.grade} />
+            <SeverityPieChart />
           </div>
 
           <div className="mt-8">

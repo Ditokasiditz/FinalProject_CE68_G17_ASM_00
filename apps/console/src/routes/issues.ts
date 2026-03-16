@@ -4,6 +4,35 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
+// GET /api/issues/severity - returns distinct affected device counts grouped by severity level
+router.get('/severity', async (req: Request, res: Response) => {
+    try {
+        // Count distinct assets (devices) affected by issues of each severity level
+        const LEVELS = ['critical', 'high', 'medium', 'low'];
+
+        const counts = await Promise.all(
+            LEVELS.map(async (level) => {
+                const count = await prisma.issueOnAsset.count({
+                    where: {
+                        issue: {
+                            severity: level.charAt(0).toUpperCase() + level.slice(1),
+                        },
+                    },
+                });
+                return {
+                    level: level.charAt(0).toUpperCase() + level.slice(1),
+                    count,
+                };
+            })
+        );
+
+        res.json(counts);
+    } catch (error) {
+        console.error('Error fetching severity summary:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // GET /api/issues - returns all issues with affected asset count and asset details
 router.get('/', async (req: Request, res: Response) => {
     try {

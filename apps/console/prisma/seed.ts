@@ -29,12 +29,12 @@ async function main() {
 
     // Create Assets
     const assets = await Promise.all([
-        prisma.asset.create({ data: { hostname: "api.example.com", ipAddress: "192.168.1.10", type: "domain", isExposed: true, city: "San Francisco", country: "United States", countryCode: "US", latitude: 37.7749, longitude: -122.4194 } }),
-        prisma.asset.create({ data: { hostname: "mail.example.com", ipAddress: "192.168.1.11", type: "domain", isExposed: true, city: "London", country: "United Kingdom", countryCode: "GB", latitude: 51.5074, longitude: -0.1278 } }),
-        prisma.asset.create({ data: { hostname: "vpn.example.com", ipAddress: "10.0.0.1", type: "domain", isExposed: true, city: "Tokyo", country: "Japan", countryCode: "JP", latitude: 35.6895, longitude: 139.6917 } }),
-        prisma.asset.create({ data: { hostname: "blog.example.com", ipAddress: "192.168.1.12", type: "subdomain", isExposed: false, city: "Singapore", country: "Singapore", countryCode: "SG", latitude: 1.3521, longitude: 103.8198 } }),
-        prisma.asset.create({ data: { hostname: "staging.example.com", ipAddress: "10.10.0.5", type: "subdomain", isExposed: true, city: "Berlin", country: "Germany", countryCode: "DE", latitude: 52.5200, longitude: 13.4050 } }),
-        prisma.asset.create({ data: { hostname: "erp.example.com", ipAddress: "192.168.2.20", type: "domain", isExposed: true, city: "Sydney", country: "Australia", countryCode: "AU", latitude: -33.8688, longitude: 151.2093 } }),
+        prisma.asset.create({ data: { hostname: "api.example.com", ipAddress: "8.8.8.8", type: "domain", isExposed: true, city: "San Francisco", country: "United States", countryCode: "US", latitude: 37.7749, longitude: -122.4194 } }),
+        prisma.asset.create({ data: { hostname: "mail.example.com", ipAddress: "1.1.1.1", type: "domain", isExposed: true, city: "London", country: "United Kingdom", countryCode: "GB", latitude: 51.5074, longitude: -0.1278 } }),
+        prisma.asset.create({ data: { hostname: "vpn.example.com", ipAddress: "208.67.222.222", type: "domain", isExposed: true, city: "Tokyo", country: "Japan", countryCode: "JP", latitude: 35.6895, longitude: 139.6917 } }),
+        prisma.asset.create({ data: { hostname: "blog.example.com", ipAddress: "13.225.103.26", type: "subdomain", isExposed: false, city: "Singapore", country: "Singapore", countryCode: "SG", latitude: 1.3521, longitude: 103.8198 } }),
+        prisma.asset.create({ data: { hostname: "staging.example.com", ipAddress: "185.199.108.153", type: "subdomain", isExposed: true, city: "Berlin", country: "Germany", countryCode: "DE", latitude: 52.5200, longitude: 13.4050 } }),
+        prisma.asset.create({ data: { hostname: "erp.example.com", ipAddress: "104.244.42.129", type: "domain", isExposed: true, city: "Sydney", country: "Australia", countryCode: "AU", latitude: -33.8688, longitude: 151.2093 } }),
     ])
     console.log(`Created ${assets.length} assets`)
 

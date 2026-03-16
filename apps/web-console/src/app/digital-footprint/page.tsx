@@ -28,18 +28,22 @@ export default function DigitalFootprintPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState<number | null>(null)
 
-  const fetchAssets = () => {
+  const fetchAssets = async (fullSync: boolean = false) => {
     setLoading(true)
-    fetch('http://localhost:3001/api/assets')
-      .then(res => res.json())
-      .then(data => {
-        setAssets(data)
-        setLoading(false)
-      })
-      .catch(error => {
-        console.error('Error fetching assets', error)
-        setLoading(false)
-      })
+    try {
+      if (fullSync) {
+        // Trigger backend to scan all assets from Shodan
+        await fetch('http://localhost:3001/api/assets/refresh-all', { method: 'POST' })
+      }
+      
+      const res = await fetch('http://localhost:3001/api/assets')
+      const data = await res.json()
+      setAssets(data)
+    } catch (error) {
+      console.error('Error fetching/syncing assets', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -97,7 +101,7 @@ export default function DigitalFootprintPage() {
               </p>
             </div>
             <button 
-              onClick={fetchAssets}
+              onClick={() => fetchAssets(true)}
               className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white/80 text-sm font-medium transition-all"
             >
               <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
@@ -159,7 +163,12 @@ export default function DigitalFootprintPage() {
                           <td className="px-6 py-4">
                             {asset.city ? (
                               <div className="flex items-center gap-2">
-                                <span className="text-sm text-white/80">{asset.city}, {asset.country}</span>
+                                <span className={cn(
+                                  "text-sm",
+                                  asset.city === 'Not Found' ? "text-white/40 italic" : "text-white/80"
+                                )}>
+                                  {asset.city}{asset.country ? `, ${asset.country}` : ''}
+                                </span>
                                 {asset.countryCode && (
                                   <img 
                                     src={`https://flagcdn.com/w20/${asset.countryCode.toLowerCase()}.png`} 

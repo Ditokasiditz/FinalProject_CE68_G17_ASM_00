@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface SeverityData {
   level: string
@@ -89,15 +91,15 @@ export function SeverityPieChart() {
   const hasData = data.some(d => d.count > 0)
 
   return (
-    <div className="rounded-xl border bg-card p-6 shadow-sm">
-      <div className="mb-1">
-        <h2 className="text-lg font-semibold tracking-tight">Vulnerability</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">
+    <Card className="overflow-hidden border-2 border-zinc-500/20 bg-card shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">Vulnerability</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">
           {total} total finding{total !== 1 ? 's' : ''} by severity
         </p>
-      </div>
+      </CardHeader>
 
-      <div className="mt-4 h-56">
+      <CardContent className="mt-4 h-56">
         {hasData ? (
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -137,7 +139,7 @@ export function SeverityPieChart() {
             No issues found
           </div>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

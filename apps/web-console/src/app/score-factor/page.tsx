@@ -98,7 +98,7 @@ export default function ScoreFactorPage() {
                   {showColumnMenu && (
                     <div className="absolute right-0 top-full pt-1 z-50">
                       <div className="w-48 rounded-md border bg-white dark:bg-zinc-950 text-card-foreground shadow-xl p-2 opacity-100">
-                        {['Factor', 'Score', 'Impact', 'Issues', 'Findings'].map(col => (
+                        {['Score', 'Impact', 'Issues', 'Findings'].map(col => (
                           <label key={col} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-muted rounded-md cursor-pointer transition-colors bg-white dark:bg-zinc-950">
                             <input
                               type="checkbox"

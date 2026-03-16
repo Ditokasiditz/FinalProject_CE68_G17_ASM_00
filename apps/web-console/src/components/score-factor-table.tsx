@@ -115,7 +115,7 @@ export function ScoreFactorTable({ data, visibleColumns = ['Factor', 'Score', 'I
             {visibleColumns.includes('Score') && <TableHead className="font-semibold">Score</TableHead>}
             {visibleColumns.includes('Impact') && <TableHead className="font-semibold">Impact</TableHead>}
             {visibleColumns.includes('Issues') && <TableHead className="font-semibold">Issues</TableHead>}
-            {visibleColumns.includes('Findings') && <TableHead className="font-semibold text-right">Findings</TableHead>}
+            {visibleColumns.includes('Findings') && <TableHead className="font-semibold">Findings</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -134,7 +134,7 @@ export function ScoreFactorTable({ data, visibleColumns = ['Factor', 'Score', 'I
                 {visibleColumns.includes('Impact') && <TableCell><ImpactBadge impact={factor.impact} /></TableCell>}
                 {visibleColumns.includes('Issues') && <TableCell><SeverityCounts counts={factor.issues} /></TableCell>}
                 {visibleColumns.includes('Findings') && (
-                  <TableCell className="text-right text-muted-foreground">
+                  <TableCell className="text-muted-foreground">
                     {factor.findingsCount > 0 ? (
                       <span className="font-medium text-foreground">{factor.findingsCount}</span>
                     ) : (
@@ -146,42 +146,53 @@ export function ScoreFactorTable({ data, visibleColumns = ['Factor', 'Score', 'I
               
               {/* Expanded Nested Issues */}
               {expandedRows.has(factor.id) && factor.nestedIssues && factor.nestedIssues.length > 0 && (
-                <TableRow className="bg-muted/10 hover:bg-muted/10 border-b-[#d4d4d8]">
-                  <TableCell colSpan={6} className="p-0 border-b-0">
-                    <div className="py-3 px-6 ml-6 border-l-2 border-primary/20 bg-background/50">
-                      <p className="text-sm text-muted-foreground mb-3 font-medium">Issues detected under {factor.title}</p>
-                      <ul className="space-y-2">
-                        {factor.nestedIssues.map((issue) => (
-                          <li 
-                            key={issue.id} 
-                            onClick={() => handleIssueClick(issue.title)}
-                            className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors border border-transparent hover:border-border"
-                          >
-                            <div className="flex items-center space-x-3 w-1/3">
-                              <span className="text-sm font-medium hover:underline decoration-muted-foreground underline-offset-4 truncate" title={issue.title}>
-                                {issue.title}
-                              </span>
-                            </div>
-                            <div className="flex items-center space-x-6 text-sm text-muted-foreground w-2/3 justify-end">
-                              <span className="w-16 text-right">
-                                {issue.impact > 0 ? <ImpactBadge impact={issue.impact} /> : <span className="text-muted-foreground/50">-</span>}
-                              </span>
-                              <span className="w-24 text-right">
-                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                  issue.severity === 'Critical' || issue.severity === 'High' ? 'bg-red-100 text-red-800' :
-                                  issue.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'
-                                }`}>
-                                  {issue.severity}
-                                </span>
-                              </span>
-                              <span className="w-16 text-right font-medium">{issue.findingsCount}</span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                factor.nestedIssues.map((issue, index) => (
+                  <TableRow key={issue.id} className={`bg-muted/10 hover:bg-muted/20 text-xs ${index === factor.nestedIssues.length - 1 ? 'border-b border-[#d4d4d8]' : 'border-0'}`}>
+                    <TableCell className="relative border-0">
+                      {/* Vertical line connecting from the chevron above */}
+                      <div className={`absolute left-[24px] top-0 w-px bg-border/50 ${index === factor.nestedIssues.length - 1 ? 'h-1/2' : 'bottom-0'}`} />
+                      {/* Horizontal branch to the item */}
+                      <div className="absolute left-[24px] top-1/2 w-4 h-px bg-border/50" />
+                    </TableCell>
+                    {visibleColumns.includes('Factor') && (
+                      <TableCell className="pl-10">
+                        <span 
+                          onClick={() => handleIssueClick(issue.title)}
+                          className="cursor-pointer text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-100 hover:underline font-medium truncate"
+                          title={issue.title}
+                        >
+                          {issue.title}
+                        </span>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes('Score') && <TableCell></TableCell>}
+                    {visibleColumns.includes('Impact') && (
+                      <TableCell>
+                        {issue.impact > 0 ? <ImpactBadge impact={issue.impact} /> : <span className="text-muted-foreground/50">-</span>}
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes('Issues') && (
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-[10px] font-semibold ${
+                          issue.severity === 'Critical' || issue.severity === 'High' ? 'bg-red-100 text-red-800' :
+                          issue.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {issue.severity}
+                        </span>
+                      </TableCell>
+                    )}
+                    {visibleColumns.includes('Findings') && (
+                      <TableCell>
+                        <span 
+                          onClick={() => handleIssueClick(issue.title)}
+                          className="cursor-pointer text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-100 hover:underline font-medium"
+                        >
+                          {issue.findingsCount}
+                        </span>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
               )}
             </React.Fragment>
           ))}

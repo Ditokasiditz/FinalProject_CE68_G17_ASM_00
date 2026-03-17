@@ -36,7 +36,7 @@ export function WorldMap({ locations }: WorldMapProps) {
         <h3 className="text-sm font-semibold text-white/90">Global Presence</h3>
         <p className="text-xs text-white/50">Tracking assets across geographic boundaries</p>
       </div>
-      
+
       <ComposableMap
         projectionConfig={{
           rotate: [-10, 0, 0],
@@ -46,7 +46,8 @@ export function WorldMap({ locations }: WorldMapProps) {
       >
         <ZoomableGroup zoom={1}>
           <Geographies geography={geoUrl}>
-            {({ geographies }) =>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {({ geographies }: { geographies: any[] }) =>
               geographies.map((geo) => (
                 <Geography
                   key={geo.rsmKey}
@@ -78,7 +79,7 @@ export function WorldMap({ locations }: WorldMapProps) {
           ))}
         </ZoomableGroup>
       </ComposableMap>
-      
+
       <div className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-lg px-3 py-1.5 text-[10px] text-white/70">
         Showing {validLocations.length} active asset points
       </div>

@@ -197,7 +197,7 @@ export default function IssueFindingsPage() {
     }, [issueName])
 
     const navigations = [
-        { title: "Dashboard", href: "/", icon: LayoutDashboard },
+        { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
         { title: "Score Factor", href: "/score-factor", icon: ShieldCheck },
         { title: "Issues portfolio", href: "/issues", icon: ShieldAlert, isActive: true },
         { title: "Digital Footprint", href: "/assets", icon: Activity },

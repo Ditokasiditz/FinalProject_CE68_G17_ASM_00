@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/sidebar"
 import { ScoreGrade } from "@/components/score-grade"
 import { FactorBreakdown } from "@/components/factor-breakdown"
 import { SeverityPieChart } from "@/components/severity-pie-chart"
+import { ProtectedRoute } from "@/providers/auth-provider"
 
 interface Factor {
   title: string
@@ -41,45 +42,49 @@ export default function DashboardPage() {
     { title: "Score Factor", href: "/score-factor", icon: ShieldCheck },
     { title: "Issues portfolio", href: "/issues", icon: ShieldAlert },
     { title: "Digital Footprint", href: "/digital-footprint", icon: Activity },
-    { title: "Team", href: "/team", icon: Users },
+    { title: "User Management", href: "/admin/users", icon: Users },
     { title: "Settings", href: "/settings", icon: Settings },
   ]
 
   if (loading || !data) {
     return (
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar navigations={navigations} />
-        <main className="flex-1 overflow-y-auto bg-muted/10 p-8 flex items-center justify-center">
-          <p className="text-muted-foreground animate-pulse">Loading dashboard data...</p>
-        </main>
-      </div>
+      <ProtectedRoute>
+        <div className="flex h-screen overflow-hidden">
+          <Sidebar navigations={navigations} />
+          <main className="flex-1 overflow-y-auto bg-muted/10 p-8 flex items-center justify-center">
+            <p className="text-muted-foreground animate-pulse">Loading dashboard data...</p>
+          </main>
+        </div>
+      </ProtectedRoute>
     )
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar navigations={navigations} />
+    return (
+      <ProtectedRoute>
+        <div className="flex h-screen overflow-hidden">
+          <Sidebar navigations={navigations} />
 
-      <main className="flex-1 overflow-y-auto bg-muted/10 p-8">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Attack Surface Summary</h1>
-            <p className="text-muted-foreground mt-2">
-              Continuous monitoring of your external attack surface and threat landscape.
-            </p>
-          </div>
+          <main className="flex-1 overflow-y-auto bg-muted/10 p-8">
+            <div className="mx-auto max-w-6xl space-y-8">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">Attack Surface Summary</h1>
+                <p className="text-muted-foreground mt-2">
+                  Continuous monitoring of your external attack surface and threat landscape.
+                </p>
+              </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <ScoreGrade score={data.score} grade={data.grade} />
-            <SeverityPieChart />
-          </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                <ScoreGrade score={data.score} grade={data.grade} />
+                <SeverityPieChart />
+              </div>
 
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4 tracking-tight text-foreground/80">Factor Breakdown</h2>
-            <FactorBreakdown factorData={data.factors} />
-          </div>
+              <div className="mt-8">
+                <h2 className="text-xl font-semibold mb-4 tracking-tight text-foreground/80">Factor Breakdown</h2>
+                <FactorBreakdown factorData={data.factors} />
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
-  )
-}
+      </ProtectedRoute>
+    )
+  }

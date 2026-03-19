@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import "dotenv/config";
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient()
 
@@ -16,10 +17,22 @@ async function main() {
     console.log(`Start seeding ...`)
 
     // Clear existing data in correct order (join table first)
+    await prisma.user.deleteMany()
     await prisma.issueOnAsset.deleteMany()
     await prisma.issue.deleteMany()
     await prisma.asset.deleteMany()
     await prisma.factor.deleteMany()
+
+    // Seed Admin User
+    const adminPassword = await bcrypt.hash('admin123', 10)
+    await prisma.user.create({
+        data: {
+            username: 'admin',
+            password: adminPassword,
+            role: 'ADMIN'
+        }
+    })
+    console.log(`Created default Admin user`)
 
     // Seed Factors
     for (const factor of dummyFactors) {

@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState } from "react"
-import { LucideIcon, ChevronLeft, ChevronRight } from "lucide-react"
+import { LucideIcon, ChevronLeft, ChevronRight, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/providers/auth-provider"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
     navigations: {
@@ -15,6 +16,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Sidebar({ className, navigations }: SidebarProps) {
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const { user, logout } = useAuth()
 
     return (
         <div 
@@ -74,15 +76,37 @@ export function Sidebar({ className, navigations }: SidebarProps) {
             </div>
 
             <div className={cn("py-4 border-t border-white/10 mt-auto transition-all duration-300", isCollapsed ? "px-0 flex justify-center" : "px-6")}>
-                <div className={cn("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
-                    <div className="h-8 w-8 shrink-0 rounded-full bg-white/10 flex items-center justify-center border border-white/10">
-                        <span className="text-xs font-semibold text-white">SC</span>
+                <div className={cn("flex items-center justify-between gap-3 w-full", isCollapsed ? "justify-center" : "")}>
+                    <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 shrink-0 rounded-full bg-white/10 flex items-center justify-center border border-white/10">
+                            <span className="text-xs font-semibold text-white">
+                                {user?.username?.substring(0, 2).toUpperCase() || "GU"}
+                            </span>
+                        </div>
+                        {!isCollapsed && (
+                            <div className="flex flex-col whitespace-nowrap overflow-hidden transition-opacity duration-300 opacity-100">
+                                <span className="text-sm font-medium text-white">{user?.username || "Guest"}</span>
+                                <span className="text-xs text-white/60 capitalize">{user?.role?.toLowerCase() || "User"}</span>
+                            </div>
+                        )}
                     </div>
                     {!isCollapsed && (
-                        <div className="flex flex-col whitespace-nowrap overflow-hidden transition-opacity duration-300 opacity-100">
-                            <span className="text-sm font-medium text-white">Sec Team</span>
-                            <span className="text-xs text-white/60">Admin</span>
-                        </div>
+                        <button 
+                            onClick={() => logout()}
+                            className="text-white/40 hover:text-white hover:bg-white/10 p-1.5 rounded-md transition-colors"
+                            title="Log out"
+                        >
+                            <LogOut className="w-4 h-4" />
+                        </button>
+                    )}
+                    {isCollapsed && (
+                        <button 
+                            onClick={() => logout()}
+                            className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/40 hover:text-white"
+                            title="Log out"
+                        >
+                            <LogOut className="w-4 h-4 ml-6 mb-2" />
+                        </button>
                     )}
                 </div>
             </div>

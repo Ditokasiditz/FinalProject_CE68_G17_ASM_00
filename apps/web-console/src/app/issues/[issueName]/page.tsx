@@ -6,6 +6,7 @@ import { LayoutDashboard, Users, ShieldAlert, Settings, Activity, ArrowLeft, Tag
 import { Sidebar } from "@/components/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { ProtectedRoute } from "@/providers/auth-provider"
 
 const API = 'http://localhost:3001'
 const MAX_COMMENT = 500
@@ -201,165 +202,167 @@ export default function IssueFindingsPage() {
         { title: "Score Factor", href: "/score-factor", icon: ShieldCheck },
         { title: "Issues portfolio", href: "/issues", icon: ShieldAlert, isActive: true },
         { title: "Digital Footprint", href: "/assets", icon: Activity },
-        { title: "Team", href: "/team", icon: Users },
+        { title: "User Management", href: "/admin/users", icon: Users },
         { title: "Settings", href: "/settings", icon: Settings },
     ]
 
     const activeAsset = issue?.findings.find(f => f.assetId === activeCommentAssetId) ?? null
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background text-foreground">
-            <Sidebar navigations={navigations} />
+        <ProtectedRoute>
+            <div className="flex h-screen overflow-hidden bg-background text-foreground">
+                <Sidebar navigations={navigations} />
 
-            {/* Comment popup */}
-            {activeCommentAssetId !== null && activeAsset && issue && (
-                <CommentPopup
-                    issueId={issue.id.toString()}
-                    assetId={activeCommentAssetId}
-                    comment={comments[activeCommentAssetId] ?? ''}
-                    onSave={(text) => {
-                        setComments(prev => ({ ...prev, [activeCommentAssetId]: text }))
-                        setActiveCommentAssetId(null)
-                    }}
-                    onDiscard={() => setActiveCommentAssetId(null)}
-                    onRemove={() => {
-                        setComments(prev => {
-                            const next = { ...prev }
-                            delete next[activeCommentAssetId]
-                            return next
-                        })
-                        setActiveCommentAssetId(null)
-                    }}
-                />
-            )}
+                {/* Comment popup */}
+                {activeCommentAssetId !== null && activeAsset && issue && (
+                    <CommentPopup
+                        issueId={issue.id.toString()}
+                        assetId={activeCommentAssetId}
+                        comment={comments[activeCommentAssetId] ?? ''}
+                        onSave={(text) => {
+                            setComments(prev => ({ ...prev, [activeCommentAssetId]: text }))
+                            setActiveCommentAssetId(null)
+                        }}
+                        onDiscard={() => setActiveCommentAssetId(null)}
+                        onRemove={() => {
+                            setComments(prev => {
+                                const next = { ...prev }
+                                delete next[activeCommentAssetId]
+                                return next
+                            })
+                            setActiveCommentAssetId(null)
+                        }}
+                    />
+                )}
 
-            <main className="flex-1 overflow-y-auto flex flex-col p-8 bg-muted/10">
-                {/* Back button */}
-                <button
-                    onClick={() => router.back()}
-                    className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors w-fit"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Issues
-                </button>
+                <main className="flex-1 overflow-y-auto flex flex-col p-8 bg-muted/10">
+                    {/* Back button */}
+                    <button
+                        onClick={() => router.back()}
+                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors w-fit"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Issues
+                    </button>
 
-                {loading ? (
-                    <p className="text-muted-foreground animate-pulse">Loading...</p>
-                ) : error ? (
-                    <p className="text-red-500">{error}</p>
-                ) : issue ? (
-                    <>
-                        {/* Issue Header */}
-                        <div className="mb-6">
-                            <div className="flex items-center gap-3 mb-2">
-                                <h1 className="text-2xl font-bold tracking-tight">{issue.title}</h1>
-                                <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-semibold", SEVERITY_COLORS[issue.severity] ?? "bg-gray-100 text-gray-800")}>
-                                    {issue.severity}
-                                </span>
+                    {loading ? (
+                        <p className="text-muted-foreground animate-pulse">Loading...</p>
+                    ) : error ? (
+                        <p className="text-red-500">{error}</p>
+                    ) : issue ? (
+                        <>
+                            {/* Issue Header */}
+                            <div className="mb-6">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <h1 className="text-2xl font-bold tracking-tight">{issue.title}</h1>
+                                    <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-semibold", SEVERITY_COLORS[issue.severity] ?? "bg-gray-100 text-gray-800")}>
+                                        {issue.severity}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{issue.description ?? 'No description available.'}</p>
+                                <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                                    <span>Factor: <strong className="text-foreground">{issue.factor}</strong></span>
+                                    {issue.impact && <span>CVSS: <strong className="text-foreground">{issue.impact.toFixed(1)}</strong></span>}
+                                    <span><strong className="text-foreground">{issue.findingsCount}</strong> affected asset{issue.findingsCount !== 1 ? 's' : ''}</span>
+                                </div>
                             </div>
-                            <p className="text-sm text-muted-foreground">{issue.description ?? 'No description available.'}</p>
-                            <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                                <span>Factor: <strong className="text-foreground">{issue.factor}</strong></span>
-                                {issue.impact && <span>CVSS: <strong className="text-foreground">{issue.impact.toFixed(1)}</strong></span>}
-                                <span><strong className="text-foreground">{issue.findingsCount}</strong> affected asset{issue.findingsCount !== 1 ? 's' : ''}</span>
-                            </div>
-                        </div>
 
-                        {/* Findings table */}
-                        <div className="rounded-md border bg-card shadow-sm">
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                                <span className="text-sm font-semibold text-muted-foreground">
-                                    {issue.findingsCount} row{issue.findingsCount !== 1 ? 's' : ''}
-                                </span>
-                            </div>
-                            <Table>
-                                <TableHeader className="bg-muted/30">
-                                    <TableRow>
-                                        <TableHead className="font-semibold text-foreground w-32">Status</TableHead>
-                                        <TableHead className="font-semibold text-foreground w-52">Domain</TableHead>
-                                        <TableHead className="font-semibold text-foreground">URL</TableHead>
-                                        <TableHead className="font-semibold text-foreground w-36 text-right">Last Observed</TableHead>
-                                        <TableHead className="font-semibold text-foreground w-24 text-center">Comment</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {issue.findings.length === 0 ? (
+                            {/* Findings table */}
+                            <div className="rounded-md border bg-card shadow-sm">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                                    <span className="text-sm font-semibold text-muted-foreground">
+                                        {issue.findingsCount} row{issue.findingsCount !== 1 ? 's' : ''}
+                                    </span>
+                                </div>
+                                <Table>
+                                    <TableHeader className="bg-muted/30">
                                         <TableRow>
-                                            <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
-                                                No affected assets found.
-                                            </TableCell>
+                                            <TableHead className="font-semibold text-foreground w-32">Status</TableHead>
+                                            <TableHead className="font-semibold text-foreground w-52">Domain</TableHead>
+                                            <TableHead className="font-semibold text-foreground">URL</TableHead>
+                                            <TableHead className="font-semibold text-foreground w-36 text-right">Last Observed</TableHead>
+                                            <TableHead className="font-semibold text-foreground w-24 text-center">Comment</TableHead>
                                         </TableRow>
-                                    ) : issue.findings.map((finding) => {
-                                        const url = finding.isExposed
-                                            ? `https://${finding.hostname}/`
-                                            : `http://${finding.hostname}/`
-                                        const hasComment = !!comments[finding.assetId]
-
-                                        return (
-                                            <TableRow key={finding.assetId} className="border-b border-border hover:bg-muted/20 transition-colors">
-                                                {/* Status — read from finding.status in the DB */}
-                                                <TableCell>
-                                                    <span className="flex items-center gap-2">
-                                                        <span className={cn(
-                                                            "w-2.5 h-2.5 rounded-full flex-shrink-0",
-                                                            finding.status === 'Open' ? "bg-red-500" : "bg-green-500"
-                                                        )} />
-                                                        <span className="text-sm font-medium">{finding.status}</span>
-                                                    </span>
-                                                </TableCell>
-
-                                                {/* Domain */}
-                                                <TableCell>
-                                                    <div className="flex items-start gap-2">
-                                                        <div className="w-5 h-5 rounded flex items-center justify-center bg-red-100 flex-shrink-0 mt-0.5">
-                                                            <span className="text-red-600 text-xs font-bold">■</span>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-sm font-semibold text-blue-500 hover:underline cursor-pointer">
-                                                                {finding.hostname}
-                                                            </p>
-                                                            <button className="text-xs text-blue-500 hover:underline flex items-center gap-0.5 mt-0.5">
-                                                                <Tag className="w-2.5 h-2.5" />
-                                                                Add Tag
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-
-                                                {/* URL */}
-                                                <TableCell>
-                                                    <span className="text-sm text-muted-foreground font-mono">{url}</span>
-                                                </TableCell>
-
-                                                {/* Last Observed */}
-                                                <TableCell className="text-right text-sm text-muted-foreground">
-                                                    {formatDate(finding.lastObserved)}
-                                                </TableCell>
-
-                                                {/* Comment icon */}
-                                                <TableCell className="text-center">
-                                                    <button
-                                                        onClick={() => setActiveCommentAssetId(finding.assetId)}
-                                                        title={hasComment ? comments[finding.assetId] : 'Add comment'}
-                                                        className={cn(
-                                                            "inline-flex items-center justify-center w-8 h-8 rounded-md transition-colors",
-                                                            hasComment
-                                                                ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                                                                : "text-muted-foreground hover:text-blue-500 hover:bg-muted"
-                                                        )}
-                                                    >
-                                                        <MessageSquare className="w-4 h-4" />
-                                                    </button>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {issue.findings.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
+                                                    No affected assets found.
                                                 </TableCell>
                                             </TableRow>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    </>
-                ) : null}
-            </main>
-        </div>
+                                        ) : issue.findings.map((finding) => {
+                                            const url = finding.isExposed
+                                                ? `https://${finding.hostname}/`
+                                                : `http://${finding.hostname}/`
+                                            const hasComment = !!comments[finding.assetId]
+
+                                            return (
+                                                <TableRow key={finding.assetId} className="border-b border-border hover:bg-muted/20 transition-colors">
+                                                    {/* Status — read from finding.status in the DB */}
+                                                    <TableCell>
+                                                        <span className="flex items-center gap-2">
+                                                            <span className={cn(
+                                                                "w-2.5 h-2.5 rounded-full flex-shrink-0",
+                                                                finding.status === 'Open' ? "bg-red-500" : "bg-green-500"
+                                                            )} />
+                                                            <span className="text-sm font-medium">{finding.status}</span>
+                                                        </span>
+                                                    </TableCell>
+
+                                                    {/* Domain */}
+                                                    <TableCell>
+                                                        <div className="flex items-start gap-2">
+                                                            <div className="w-5 h-5 rounded flex items-center justify-center bg-red-100 flex-shrink-0 mt-0.5">
+                                                                <span className="text-red-600 text-xs font-bold">■</span>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm font-semibold text-blue-500 hover:underline cursor-pointer">
+                                                                    {finding.hostname}
+                                                                </p>
+                                                                <button className="text-xs text-blue-500 hover:underline flex items-center gap-0.5 mt-0.5">
+                                                                    <Tag className="w-2.5 h-2.5" />
+                                                                    Add Tag
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+
+                                                    {/* URL */}
+                                                    <TableCell>
+                                                        <span className="text-sm text-muted-foreground font-mono">{url}</span>
+                                                    </TableCell>
+
+                                                    {/* Last Observed */}
+                                                    <TableCell className="text-right text-sm text-muted-foreground">
+                                                        {formatDate(finding.lastObserved)}
+                                                    </TableCell>
+
+                                                    {/* Comment icon */}
+                                                    <TableCell className="text-center">
+                                                        <button
+                                                            onClick={() => setActiveCommentAssetId(finding.assetId)}
+                                                            title={hasComment ? comments[finding.assetId] : 'Add comment'}
+                                                            className={cn(
+                                                                "inline-flex items-center justify-center w-8 h-8 rounded-md transition-colors",
+                                                                hasComment
+                                                                    ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
+                                                                    : "text-muted-foreground hover:text-blue-500 hover:bg-muted"
+                                                            )}
+                                                        >
+                                                            <MessageSquare className="w-4 h-4" />
+                                                        </button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </>
+                    ) : null}
+                </main>
+            </div>
+        </ProtectedRoute>
     )
 }

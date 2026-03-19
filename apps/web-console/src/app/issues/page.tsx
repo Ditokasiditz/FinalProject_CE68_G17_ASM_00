@@ -106,6 +106,7 @@ export default function IssuesPage() {
             <Sidebar navigations={navigations} />
 
             <main className="flex-1 overflow-y-auto p-8 bg-muted/10">
+                <div className="mx-auto max-w-6xl">
                 <h2 className="text-4xl font-extrabold tracking-tight mb-8 mt-2">Issues</h2>
 
                 {/* Grade Summary Card Area */}
@@ -240,6 +241,7 @@ export default function IssuesPage() {
                             )}
                         </TableBody>
                     </Table>
+                </div>
                 </div>
             </main>
         </div>

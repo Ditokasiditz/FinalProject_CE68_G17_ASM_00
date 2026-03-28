@@ -199,10 +199,10 @@ export default function IssuesPage() {
                     </div>
 
                     {/* Data Table */}
-                    <div className="shrink-0 rounded-md border border-[#d4d4d8] bg-card shadow-sm overflow-hidden">
+                    <div className="shrink-0 rounded-md border border-[#d4d4d8] dark:border-zinc-700 bg-card shadow-sm overflow-hidden">
                         <Table className="border-collapse">
                             <TableHeader>
-                                <TableRow className="bg-[#f9f9fb] border-b-[#d4d4d8] hover:bg-[#f9f9fb]">
+                                <TableRow className="bg-[#f9f9fb] dark:bg-[#27272a] border-b border-[#d4d4d8] dark:border-zinc-700 hover:bg-[#f9f9fb] dark:hover:bg-[#27272a]">
                                     {visibleColumns.includes('Issue') && <TableHead className="font-bold text-foreground">Issue</TableHead>}
                                     {visibleColumns.includes('Factor') && <TableHead className="font-bold text-foreground">Factor</TableHead>}
                                     {visibleColumns.includes('Severity') && <TableHead className="font-bold text-foreground">Severity</TableHead>}
@@ -212,12 +212,17 @@ export default function IssuesPage() {
                             </TableHeader>
                             <TableBody>
                                 {filteredIssues.length > 0 ? filteredIssues.map((row, i) => (
-                                    <TableRow key={row.id} className={`${i % 2 === 0 ? "bg-background" : "bg-muted/20"} border-b-[#d4d4d8] hover:bg-muted/30`}>
+                                    <TableRow key={row.id} className={`${i % 2 === 0 ? "bg-background" : "bg-muted/20"} border-b border-[#d4d4d8] dark:border-zinc-700/60 hover:bg-muted/30`}>
                                         {visibleColumns.includes('Issue') && <TableCell className="font-medium text-muted-foreground">{row.title}</TableCell>}
                                         {visibleColumns.includes('Factor') && <TableCell className="text-muted-foreground">{row.factor}</TableCell>}
                                         {visibleColumns.includes('Severity') && (
                                             <TableCell className="text-muted-foreground">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${row.severity === 'Critical' || row.severity === 'High' ? 'bg-red-100 text-red-800' : row.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}`}>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                                    row.severity === 'Critical' ? 'bg-red-100 text-red-900 dark:bg-red-900/40 dark:text-red-300' :
+                                                    row.severity === 'High' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
+                                                    row.severity === 'Medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                                }`}>
                                                     {row.severity}
                                                 </span>
                                             </TableCell>
@@ -227,7 +232,7 @@ export default function IssuesPage() {
                                             <TableCell>
                                                 <button
                                                     onClick={() => router.push("/issues/" + encodeURIComponent(row.title))}
-                                                    className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                                                    className="text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 hover:underline font-medium"
                                                 >
                                                     {row.findingsCount}
                                                 </button>

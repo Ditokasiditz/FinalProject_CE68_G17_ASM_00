@@ -19,6 +19,7 @@ router.get('/', async (req, res) => {
         id: true,
         username: true,
         role: true,
+        avatar: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -57,6 +58,7 @@ router.post('/', async (req, res) => {
         id: true,
         username: true,
         role: true,
+        avatar: true,
         createdAt: true,
       },
     });
@@ -119,6 +121,7 @@ router.put('/:id', async (req, res) => {
         id: true,
         username: true,
         role: true,
+        avatar: true,
         createdAt: true,
         updatedAt: true,
       },

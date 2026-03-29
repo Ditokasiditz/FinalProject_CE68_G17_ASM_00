@@ -311,7 +311,7 @@ export default function UsersManagementPage() {
                             <div className="relative">
                               {user.avatar ? (
                                 <img
-                                  src={user.avatar.startsWith('http') ? user.avatar : `${API_BASE}${user.avatar}`}
+                                  src={user.avatar}
                                   alt={user.username}
                                   className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
                                   onError={(e) => {

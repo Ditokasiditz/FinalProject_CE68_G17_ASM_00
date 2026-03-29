@@ -72,12 +72,12 @@ export default function DigitalFootprintPage() {
 
 
   return (
-    <main className="flex-1 overflow-y-auto p-8 relative bg-[#050B35]">
+    <main className="flex-1 overflow-y-auto overflow-x-hidden p-8 relative bg-gradient-to-br from-[#050B35] via-[#0B1247] to-[#1a188b]">
           {/* Abstract Background Elements */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600/10 blur-[100px] rounded-full -z-10 -translate-x-1/2 translate-y-1/2" />
+          <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#1a188b]/40 blur-[120px] rounded-full pointer-events-none" />
 
-          <div className="mx-auto max-w-6xl space-y-8">
+          <div className="mx-auto max-w-6xl space-y-8 relative z-10">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">

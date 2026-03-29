@@ -155,20 +155,20 @@ export default function UsersManagementPage() {
   }, [users, searchQuery, roleFilter]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-8 bg-white text-gray-900 relative">
+    <div className="flex-1 overflow-y-auto p-8 bg-muted/10 text-foreground relative">
       <div className="mx-auto max-w-6xl space-y-6">
 
             {/* Header */}
-            <div className="flex items-center gap-3 border-b border-gray-200 pb-4 mb-6">
-              <UsersIcon className="w-7 h-7 text-gray-800" strokeWidth={2.5} />
-              <h1 className="text-2xl font-extrabold tracking-tight">User Management</h1>
+            <div className="flex items-center gap-3 border-b border-border pb-4 mb-6">
+              <UsersIcon className="w-7 h-7 text-foreground" strokeWidth={2.5} />
+              <h1 className="text-2xl font-extrabold tracking-tight text-foreground">User Management</h1>
             </div>
 
             {error && (
-              <div className="p-4 bg-red-50 text-red-600 rounded-md border border-red-200 flex items-center gap-2">
+              <div className="p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-md flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 {error}
-                <button onClick={() => setError('')} className="ml-auto text-red-400 hover:text-red-600"><X className="w-4 h-4" /></button>
+                <button onClick={() => setError('')} className="ml-auto text-destructive/70 hover:text-destructive"><X className="w-4 h-4" /></button>
               </div>
             )}
 
@@ -176,44 +176,44 @@ export default function UsersManagementPage() {
             <div className="flex flex-col md:flex-row gap-4 items-stretch justify-between mb-8">
               <div className="flex gap-4 flex-1">
                 {/* Total Card */}
-                <div className="flex-1 border border-gray-300 rounded-xl p-5 flex flex-col justify-between max-w-[200px]">
+                <div className="flex-1 border border-border bg-card rounded-xl p-5 flex flex-col justify-between max-w-[200px]">
                   <div className="flex justify-between items-start">
-                    <h2 className="text-lg font-extrabold text-gray-900">Total</h2>
-                    <div className="flex items-center font-bold text-lg">
-                      <span className="w-1.5 h-1.5 rounded-full bg-black mr-2"></span>
+                    <h2 className="text-lg font-extrabold text-card-foreground">Total</h2>
+                    <div className="flex items-center font-bold text-lg text-card-foreground">
+                      <span className="w-1.5 h-1.5 rounded-full bg-foreground mr-2"></span>
                       {users.length}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-400 font-medium mt-3 leading-tight">
+                  <div className="text-sm text-muted-foreground font-medium mt-3 leading-tight">
                     <p>All accounts</p>
                   </div>
                 </div>
 
                 {/* Admin Card */}
-                <div className="flex-1 border border-gray-300 rounded-xl p-5 flex flex-col justify-between max-w-[200px]">
+                <div className="flex-1 border border-border bg-card rounded-xl p-5 flex flex-col justify-between max-w-[200px]">
                   <div className="flex justify-between items-start">
-                    <h2 className="text-lg font-extrabold text-gray-900">Admin</h2>
-                    <div className="flex items-center font-bold text-lg">
+                    <h2 className="text-lg font-extrabold text-card-foreground">Admin</h2>
+                    <div className="flex items-center font-bold text-lg text-card-foreground">
                       <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-2"></span>
                       {adminCount}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-400 font-medium mt-3 leading-tight">
+                  <div className="text-sm text-muted-foreground font-medium mt-3 leading-tight">
                     <p>Account manager</p>
                     <p>Full access</p>
                   </div>
                 </div>
 
                 {/* User Card */}
-                <div className="flex-1 border border-gray-300 rounded-xl p-5 flex flex-col justify-between max-w-[200px]">
+                <div className="flex-1 border border-border bg-card rounded-xl p-5 flex flex-col justify-between max-w-[200px]">
                   <div className="flex justify-between items-start">
-                    <h2 className="text-lg font-extrabold text-gray-900">User</h2>
-                    <div className="flex items-center font-bold text-lg">
+                    <h2 className="text-lg font-extrabold text-card-foreground">User</h2>
+                    <div className="flex items-center font-bold text-lg text-card-foreground">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-2"></span>
                       {userCount}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-400 font-medium mt-3 leading-tight">
+                  <div className="text-sm text-muted-foreground font-medium mt-3 leading-tight">
                     <p>Standard member</p>
                   </div>
                 </div>
@@ -234,13 +234,13 @@ export default function UsersManagementPage() {
             {/* Search + Filter Bar */}
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-between mb-2">
               <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search by username..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 h-10 rounded-lg border border-gray-300 bg-white text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-9 pr-4 h-10 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -251,28 +251,28 @@ export default function UsersManagementPage() {
                     className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-colors ${
                       roleFilter === f
                         ? 'bg-[#1e2a9b] border-[#1e2a9b] text-white'
-                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                        : 'bg-background border-border text-foreground hover:bg-muted'
                     }`}
                   >
                     {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()}
                   </button>
                 ))}
-                <span className="text-sm text-gray-400 font-medium pl-2">
+                <span className="text-sm text-muted-foreground font-medium pl-2">
                   {filteredUsers.length} of {users.length} user{users.length !== 1 ? 's' : ''}
                 </span>
               </div>
             </div>
 
             {/* Table */}
-            <div className="rounded-md border border-[#d4d4d8] bg-card overflow-hidden">
+            <div className="shrink-0 rounded-md border border-[#d4d4d8] dark:border-zinc-700 bg-card shadow-sm overflow-hidden">
               <Table className="border-collapse">
                 <TableHeader>
-                  <TableRow className="bg-[#f9f9fb] border-b-[#d4d4d8] hover:bg-[#f9f9fb]">
-                    <TableHead className="font-semibold w-[280px]">User</TableHead>
-                    <TableHead className="font-semibold">Role</TableHead>
-                    <TableHead className="font-semibold">Create Date</TableHead>
-                    <TableHead className="font-semibold">Last Updated</TableHead>
-                    <TableHead className="font-semibold text-center w-[100px]">Actions</TableHead>
+                  <TableRow className="bg-[#f9f9fb] dark:bg-[#27272a] border-b border-[#d4d4d8] dark:border-zinc-700 hover:bg-[#f9f9fb] dark:hover:bg-[#27272a]">
+                    <TableHead className="font-semibold w-[280px] text-foreground">User</TableHead>
+                    <TableHead className="font-semibold text-foreground">Role</TableHead>
+                    <TableHead className="font-semibold text-foreground">Create Date</TableHead>
+                    <TableHead className="font-semibold text-foreground">Last Updated</TableHead>
+                    <TableHead className="font-semibold text-center w-[100px] text-foreground">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -290,7 +290,7 @@ export default function UsersManagementPage() {
                     </TableRow>
                   ) : (
                     filteredUsers.map((user) => (
-                      <TableRow key={user.id} className="hover:bg-muted/30 border-b-[#d4d4d8]">
+                      <TableRow key={user.id} className="hover:bg-muted/30 border-b border-[#d4d4d8] dark:border-zinc-700">
                         <TableCell className="py-4 font-medium">
                           <div className="flex items-center gap-3">
                             <div className="relative">
@@ -298,7 +298,7 @@ export default function UsersManagementPage() {
                                 <img
                                   src={user.avatar}
                                   alt={user.username}
-                                  className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                  className="w-10 h-10 rounded-full object-cover border-2 border-background shadow-sm"
                                   onError={(e) => {
                                     (e.target as HTMLImageElement).style.display = 'none';
                                     (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
@@ -306,18 +306,18 @@ export default function UsersManagementPage() {
                                 />
                               ) : null}
                               {/* Fallback avatar if error or no avatar */}
-                              <div className={`w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-blue-100 text-indigo-700 font-bold flex items-center justify-center border-2 border-white shadow-sm shrink-0 text-sm ${user.avatar ? 'hidden' : ''}`}>
+                              <div className={`w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-blue-100 text-indigo-700 font-bold flex items-center justify-center border-2 border-background shadow-sm shrink-0 text-sm ${user.avatar ? 'hidden' : ''}`}>
                                 {user.username.charAt(0).toUpperCase()}
                               </div>
                               {currentUser?.id === user.id && (
-                                <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-green-500"></span>
+                                <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background bg-green-500"></span>
                               )}
                             </div>
                             <div className="flex flex-col">
                               <div className="flex items-center gap-2">
-                                <span className="text-gray-900 font-semibold">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</span>
+                                <span className="text-foreground font-semibold">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</span>
                                 {currentUser?.id === user.id && (
-                                  <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                                  <span className="text-[10px] bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">
                                     You
                                   </span>
                                 )}
@@ -328,22 +328,22 @@ export default function UsersManagementPage() {
                         <TableCell>
                           <span className={`px-3 py-1 inline-flex items-center text-xs font-bold uppercase tracking-wider rounded-full border ${
                             user.role === 'ADMIN'
-                              ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
-                              : 'bg-slate-50 border-slate-200 text-slate-700'
+                              ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/40 dark:border-indigo-800 dark:text-indigo-300'
+                              : 'bg-slate-50 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
                           }`}>
                             {user.role === 'ADMIN' ? 'Admin' : 'User'}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-col text-[14px] font-medium text-gray-700">
+                          <div className="flex flex-col text-[14px] font-medium text-foreground">
                             <span>{new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                            <span className="text-gray-500 text-[12px]">{new Date(user.createdAt || Date.now()).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span className="text-muted-foreground text-[12px]">{new Date(user.createdAt || Date.now()).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-col text-[14px] font-medium text-gray-700">
+                          <div className="flex flex-col text-[14px] font-medium text-foreground">
                             <span>{new Date(user.updatedAt || user.createdAt || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                            <span className="text-gray-500 text-[12px]">{new Date(user.updatedAt || user.createdAt || Date.now()).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span className="text-muted-foreground text-[12px]">{new Date(user.updatedAt || user.createdAt || Date.now()).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
@@ -357,7 +357,7 @@ export default function UsersManagementPage() {
                                 setEditPassword('');
                                 setIsEditModalOpen(true);
                               }}
-                              className="p-1.5 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
                               title="Edit User"
                             >
                               <MoreVertical className="w-5 h-5" strokeWidth={2} />
@@ -366,7 +366,7 @@ export default function UsersManagementPage() {
                             <button
                               onClick={() => confirmDelete(user)}
                               disabled={currentUser?.id === user.id}
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                              className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-md transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
                               title="Delete User"
                             >
                               <Trash2 className="w-5 h-5" strokeWidth={2} />
@@ -383,41 +383,41 @@ export default function UsersManagementPage() {
 
         {/* ── Add User Modal ───────────────────────────────────── */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050B35]/60 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900">
-                  <UserPlus className="w-5 h-5 text-blue-600" />
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="bg-background rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-border">
+              <div className="px-6 py-5 border-b border-border flex justify-between items-center bg-muted/50">
+                <h2 className="text-xl font-bold flex items-center gap-2 text-foreground">
+                  <UserPlus className="w-5 h-5 text-blue-500" />
                   Add New User
                 </h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-700 hover:bg-gray-200 p-1.5 rounded-full transition-colors">
+                <button onClick={() => setIsModalOpen(false)} className="text-muted-foreground hover:text-foreground hover:bg-muted p-1.5 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <form onSubmit={handleCreateUser} className="p-6 space-y-5">
                 <div className="space-y-2">
-                  <label htmlFor="modal-username" className="text-sm font-semibold text-gray-700 block">Username</label>
+                  <label htmlFor="modal-username" className="text-sm font-semibold text-foreground block">Username</label>
                   <input id="modal-username" value={username} onChange={e => setUsername(e.target.value)} required autoFocus
-                    className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                    className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="modal-password" className="text-sm font-semibold text-gray-700 block">Password</label>
+                  <label htmlFor="modal-password" className="text-sm font-semibold text-foreground block">Password</label>
                   <input id="modal-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                    className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                    className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="modal-role" className="text-sm font-semibold text-gray-700 block">Role</label>
+                  <label htmlFor="modal-role" className="text-sm font-semibold text-foreground block">Role</label>
                   <div className="relative">
                     <select id="modal-role" value={role} onChange={e => setRole(e.target.value)}
-                      className="flex h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-10 cursor-pointer">
+                      className="flex h-11 w-full appearance-none rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-10 cursor-pointer">
                       <option value="USER">User</option>
                       <option value="ADMIN">Admin</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   </div>
                 </div>
                 <div className="pt-2 flex justify-end gap-3">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="h-11 px-6 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 transition-colors">Cancel</button>
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="h-11 px-6 rounded-lg font-semibold text-foreground hover:bg-muted transition-colors">Cancel</button>
                   <button type="submit" disabled={isCreating} className="h-11 px-6 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center min-w-[140px]">
                     {isCreating ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Create Account'}
                   </button>
@@ -429,46 +429,46 @@ export default function UsersManagementPage() {
 
         {/* ── Edit User Modal ──────────────────────────────────── */}
         {isEditModalOpen && editingUser && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050B35]/60 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900">
-                  <Settings className="w-5 h-5 text-blue-600" />
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-5 border-b border-border flex justify-between items-center bg-muted/50">
+                <h2 className="text-xl font-bold flex items-center gap-2 text-foreground">
+                  <Settings className="w-5 h-5 text-blue-500" />
                   Edit User
                 </h2>
-                <button onClick={() => setIsEditModalOpen(false)} className="text-gray-400 hover:text-gray-700 hover:bg-gray-200 p-1.5 rounded-full transition-colors">
+                <button onClick={() => setIsEditModalOpen(false)} className="text-muted-foreground hover:text-foreground hover:bg-muted p-1.5 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <form onSubmit={handleEditUser} className="p-6 space-y-5">
                 <div className="space-y-2">
-                  <label htmlFor="edit-username" className="text-sm font-semibold text-gray-700 block">Username</label>
+                  <label htmlFor="edit-username" className="text-sm font-semibold text-foreground block">Username</label>
                   <input id="edit-username" value={editUsername} onChange={e => setEditUsername(e.target.value)} required
-                    className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                    className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="edit-password" className="text-sm font-semibold text-gray-700 block">
-                    New Password <span className="text-gray-400 font-normal">(leave blank to keep current)</span>
+                  <label htmlFor="edit-password" className="text-sm font-semibold text-foreground block">
+                    New Password <span className="text-muted-foreground font-normal">(leave blank to keep current)</span>
                   </label>
                   <input id="edit-password" type="password" value={editPassword} onChange={e => setEditPassword(e.target.value)} placeholder="Enter new password"
-                    className="flex h-11 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                    className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="edit-role" className="text-sm font-semibold text-gray-700 block">Role</label>
+                  <label htmlFor="edit-role" className="text-sm font-semibold text-foreground block">Role</label>
                   <div className="relative">
                     <select id="edit-role" value={editRole} onChange={e => setEditRole(e.target.value)} disabled={currentUser?.id === editingUser.id}
-                      className="flex h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                      className="flex h-11 w-full appearance-none rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="USER">User</option>
                       <option value="ADMIN">Admin</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   </div>
                   {currentUser?.id === editingUser.id && (
                     <p className="text-xs text-orange-500 mt-1">You cannot change your own role.</p>
                   )}
                 </div>
                 <div className="pt-2 flex justify-end gap-3">
-                  <button type="button" onClick={() => setIsEditModalOpen(false)} className="h-11 px-6 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 transition-colors">Cancel</button>
+                  <button type="button" onClick={() => setIsEditModalOpen(false)} className="h-11 px-6 rounded-lg font-semibold text-foreground hover:bg-muted transition-colors">Cancel</button>
                   <button type="submit" disabled={isUpdating} className="h-11 px-6 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center min-w-[140px]">
                     {isUpdating ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Save Changes'}
                   </button>
@@ -480,24 +480,24 @@ export default function UsersManagementPage() {
 
         {/* ── Delete Confirmation Modal ────────────────────────── */}
         {isDeleteModalOpen && deletingUser && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050B35]/60 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="bg-background rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-border">
               <div className="p-6 flex flex-col items-center text-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
-                  <AlertTriangle className="w-7 h-7 text-red-600" strokeWidth={2} />
+                <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
+                  <AlertTriangle className="w-7 h-7 text-red-600 dark:text-red-400" strokeWidth={2} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-1">Delete Account</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-xl font-bold text-foreground mb-1">Delete Account</h2>
+                  <p className="text-sm text-muted-foreground">
                     Are you sure you want to delete{' '}
-                    <span className="font-semibold text-gray-800">{deletingUser.username}</span>?
+                    <span className="font-semibold text-foreground">{deletingUser.username}</span>?
                     <br />This action cannot be undone.
                   </p>
                 </div>
                 <div className="flex gap-3 w-full pt-2">
                   <button
                     onClick={() => { setIsDeleteModalOpen(false); setDeletingUser(null); }}
-                    className="flex-1 h-11 rounded-lg font-semibold border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+                    className="flex-1 h-11 rounded-lg font-semibold border border-input text-foreground hover:bg-muted transition-colors"
                   >
                     Cancel
                   </button>

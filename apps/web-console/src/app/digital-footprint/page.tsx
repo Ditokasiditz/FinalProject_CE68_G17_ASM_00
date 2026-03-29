@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/sidebar"
 import { WorldMap } from "@/components/world-map"
 import { cn } from "@/lib/utils"
 import { ProtectedRoute } from "@/providers/auth-provider"
+import { API_BASE } from "@/lib/api"
 
 interface Asset {
   id: number
@@ -34,10 +35,10 @@ export default function DigitalFootprintPage() {
     try {
       if (fullSync) {
         // Trigger backend to scan all assets from Shodan
-        await fetch('http://localhost:3001/api/assets/refresh-all', { method: 'POST' })
+        await fetch(`${API_BASE}/api/assets/refresh-all`, { method: 'POST' })
       }
       
-      const res = await fetch('http://localhost:3001/api/assets')
+      const res = await fetch(`${API_BASE}/api/assets`)
       const data = await res.json()
       setAssets(data)
     } catch (error) {
@@ -54,7 +55,7 @@ export default function DigitalFootprintPage() {
   const handleRefresh = async (id: number) => {
     setRefreshing(id)
     try {
-      const response = await fetch(`http://localhost:3001/api/assets/${id}/refresh`, {
+      const response = await fetch(`${API_BASE}/api/assets/${id}/refresh`, {
         method: 'POST',
       })
       if (response.ok) {

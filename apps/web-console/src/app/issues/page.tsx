@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { ProtectedRoute } from "@/providers/auth-provider"
+import { API_BASE } from "@/lib/api"
 
 interface Issue {
     id: number
@@ -51,13 +52,13 @@ export default function IssuesPage() {
 
     useEffect(() => {
         // Fetch dashboard summary for the Score and Grade
-        fetch('http://localhost:3001/api/dashboard/summary')
+        fetch(`${API_BASE}/api/dashboard/summary`)
             .then(res => res.json())
             .then(data => setDashboardData(data))
             .catch(err => console.error(err))
 
         // Fetch issues
-        fetch('http://localhost:3001/api/issues')
+        fetch(`${API_BASE}/api/issues`)
             .then(res => res.json())
             .then((data: Issue[]) => setIssuesData(data))
             .catch(err => console.error(err))

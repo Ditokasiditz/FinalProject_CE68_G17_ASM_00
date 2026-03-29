@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { API_BASE } from '@/lib/api';
 
 export interface User {
   id: number;
@@ -29,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/auth/me', {
+        const res = await fetch(`${API_BASE}/api/auth/me`, {
           credentials: 'include', // Send cookies
         });
 
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      await fetch('http://localhost:3001/api/auth/logout', {
+      await fetch(`${API_BASE}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });

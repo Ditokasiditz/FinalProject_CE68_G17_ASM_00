@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/sidebar"
 import { ScoreFactorTable, FactorDef } from "@/components/score-factor-table"
 import { ScoreGrade } from "@/components/score-grade"
 import { ProtectedRoute } from "@/providers/auth-provider"
+import { API_BASE } from "@/lib/api"
 
 export default function ScoreFactorPage() {
   const [data, setData] = useState<FactorDef[]>([])
@@ -29,7 +30,7 @@ export default function ScoreFactorPage() {
   }, [])
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/factors')
+    fetch(`${API_BASE}/api/factors`)
       .then(res => res.json())
       .then((factors: FactorDef[]) => {
         setData(factors)
@@ -40,7 +41,7 @@ export default function ScoreFactorPage() {
         setLoading(false)
       })
 
-    fetch('http://localhost:3001/api/dashboard/summary')
+    fetch(`${API_BASE}/api/dashboard/summary`)
       .then(res => res.json())
       .then(dashboardData => {
         setDashboardData(dashboardData)

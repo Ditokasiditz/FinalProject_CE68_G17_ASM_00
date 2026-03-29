@@ -7,6 +7,7 @@ import { ScoreGrade } from "@/components/score-grade"
 import { FactorBreakdown } from "@/components/factor-breakdown"
 import { SeverityPieChart } from "@/components/severity-pie-chart"
 import { ProtectedRoute } from "@/providers/auth-provider"
+import { API_BASE } from "@/lib/api"
 
 interface Factor {
   title: string
@@ -25,7 +26,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/dashboard/summary')
+    fetch(`${API_BASE}/api/dashboard/summary`)
       .then(res => res.json())
       .then(dashboardData => {
         setData(dashboardData)

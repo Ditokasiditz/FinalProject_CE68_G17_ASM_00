@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { API_BASE } from "@/lib/api"
 
 interface SeverityData {
   level: string
@@ -66,7 +67,7 @@ export function SeverityPieChart() {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/issues/severity')
+    fetch(`${API_BASE}/api/issues/severity`)
       .then(res => res.json())
       .then((result: SeverityData[]) => {
         setData(result)

@@ -7,8 +7,7 @@ import { Sidebar } from "@/components/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { ProtectedRoute } from "@/providers/auth-provider"
-
-const API = 'http://localhost:3001'
+import { API_BASE as API } from "@/lib/api"
 const MAX_COMMENT = 500
 
 interface FindingAsset {

@@ -283,7 +283,7 @@ export default function UsersManagementPage() {
               <Table className="border-collapse">
                 <TableHeader>
                   <TableRow className="bg-[#f9f9fb] border-b-[#d4d4d8] hover:bg-[#f9f9fb]">
-                    <TableHead className="font-semibold w-[220px]">User</TableHead>
+                    <TableHead className="font-semibold w-[280px]">User</TableHead>
                     <TableHead className="font-semibold">Role</TableHead>
                     <TableHead className="font-semibold">Create Date</TableHead>
                     <TableHead className="font-semibold">Last Updated</TableHead>
@@ -307,12 +307,38 @@ export default function UsersManagementPage() {
                     filteredUsers.map((user) => (
                       <TableRow key={user.id} className="hover:bg-muted/30 border-b-[#d4d4d8]">
                         <TableCell className="py-4 font-medium">
-                          <span>{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</span>
-                          {currentUser?.id === user.id && (
-                            <span className="ml-2 text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide align-middle">
-                              You
-                            </span>
-                          )}
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              {user.avatar ? (
+                                <img
+                                  src={user.avatar.startsWith('http') ? user.avatar : `${API_BASE}${user.avatar}`}
+                                  alt={user.username}
+                                  className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                    (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                                  }}
+                                />
+                              ) : null}
+                              {/* Fallback avatar if error or no avatar */}
+                              <div className={`w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-blue-100 text-indigo-700 font-bold flex items-center justify-center border-2 border-white shadow-sm shrink-0 text-sm ${user.avatar ? 'hidden' : ''}`}>
+                                {user.username.charAt(0).toUpperCase()}
+                              </div>
+                              {currentUser?.id === user.id && (
+                                <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-green-500"></span>
+                              )}
+                            </div>
+                            <div className="flex flex-col">
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-900 font-semibold">{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</span>
+                                {currentUser?.id === user.id && (
+                                  <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                                    You
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </TableCell>
                         <TableCell>
                           <span className={`px-3 py-1 inline-flex items-center text-xs font-bold uppercase tracking-wider rounded-full border ${

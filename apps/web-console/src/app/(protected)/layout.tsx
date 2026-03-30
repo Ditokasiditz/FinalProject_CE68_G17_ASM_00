@@ -4,7 +4,7 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Users, ShieldAlert,
-  Settings, Activity, ShieldCheck,
+  Settings, Activity, ShieldCheck, Search,
 } from 'lucide-react'
 import { Sidebar } from '@/components/sidebar'
 import { ProtectedRoute } from '@/providers/auth-provider'
@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { title: 'Score Factor',     href: '/score-factor',     icon: ShieldCheck },
   { title: 'Issues portfolio', href: '/issues',           icon: ShieldAlert },
   { title: 'Digital Footprint',href: '/digital-footprint',icon: Activity },
+  { title: 'Domain Discovery', href: '/discovery',        icon: Search },
   { title: 'User Management',  href: '/admin/users',      icon: Users },
   { title: 'Settings',         href: '/settings',         icon: Settings },
 ]

@@ -8,6 +8,7 @@ import factorRoutes from './routes/factors.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import profileRoutes from './routes/profile.js';
+import discoveryRoutes from './routes/discovery.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -47,6 +48,7 @@ app.use('/api/factors', factorRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/discovery', discoveryRoutes);
 
 app.get('/api/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', message: 'ASM Backend is running' });

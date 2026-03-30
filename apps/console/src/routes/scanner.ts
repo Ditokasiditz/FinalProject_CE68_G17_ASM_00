@@ -16,13 +16,39 @@ const prisma = new PrismaClient();
 // Absolute path to where our Python modules will live
 const PYTHON_MODULES_DIR = path.join(process.cwd(), 'python_modules');
 
+// Global lock tracking scanner status
+let isScanRunning = false;
+
+router.get('/status', (req: Request, res: Response) => {
+    res.json({ isScanning: isScanRunning });
+});
+
 /**
  * POST /api/scanner/run-all
  * Fetches all assets possessing an IP address from the DB.
  * For each asset, invokes the configured Python scan modules.
  * Parses the { found: boolean } response and updates the DB.
  */
-router.post('/run-all', async (req: Request, res: Response) => {
+router.post('/run-all', (req: Request, res: Response) => {
+    if (isScanRunning) {
+        return res.status(409).json({ error: 'Scan active already' });
+    }
+    
+    // Lock the scanner explicitly 
+    isScanRunning = true; 
+
+    if (isScanRunning) {
+        return res.status(409).json({ error: 'Scan active already' });
+    }
+    
+    // Lock the scanner explicitly 
+    isScanRunning = true; 
+
+    // 1) Acknowledge the request instantly so the browser doesn't hang
+    res.status(202).json({ message: 'Scan started in background' });
+
+    // 2) Detach the heavy lifting into an async background IIFE
+    (async () => {
     try {
         console.log(`[Scanner] Fetching assets to scan...`);
         // Fetch ALL assets that have an IP address
@@ -120,12 +146,14 @@ router.post('/run-all', async (req: Request, res: Response) => {
             }
         }
 
-        res.json({ message: 'Scan complete', results });
-
+        console.log('[Scanner] ✅ Background scan completely finished.');
     } catch (error) {
-        console.error('Error running scanner:', error);
-        res.status(500).json({ error: 'Internal server error while running scanner' });
+        console.error('[Scanner] ❌ Fatal error running background scanner:', error);
+    } finally {
+        isScanRunning = false;
+        console.log('[Scanner] 🔓 Scanner unlocked.');
     }
+    })(); // Execute the async wrapper
 });
 
 export default router;

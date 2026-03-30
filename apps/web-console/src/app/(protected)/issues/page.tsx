@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { API_BASE } from "@/lib/api"
+import { ScoreGrade } from "@/components/score-grade"
 
 interface Issue {
     id: number
@@ -49,12 +50,10 @@ export default function IssuesPage() {
         setIsScanning(true)
         try {
             const res = await fetch(`${API_BASE}/api/scanner/run-all`, { method: 'POST' })
-            if (!res.ok) throw new Error('Scan failed')
-            fetchIssues()
+            if (!res.ok && res.status !== 202) throw new Error('Scan failed')
+            // Don't auto-fetch here, the polling system inside useEffect handles completion!
         } catch (error) {
             console.error('Error running scan:', error)
-            alert('Failed to run scanner')
-        } finally {
             setIsScanning(false)
         }
     }
@@ -72,15 +71,37 @@ export default function IssuesPage() {
       }
     }, [])
 
+        // Auto-polling the scanner endpoint globally
     useEffect(() => {
-        // Fetch dashboard summary for the Score and Grade
+        const checkStatus = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/api/scanner/status`)
+                const data = await res.json()
+                
+                setIsScanning((prev) => {
+                    // if it WAS scanning but now is NOT scanning, trigger table refresh immediately!
+                    if (prev && !data.isScanning) {
+                        fetchIssues()
+                    }
+                    return data.isScanning
+                })
+            } catch (err) {
+                console.error("Failed to check scanner status", err)
+            }
+        }
+        
+        // Initial dashboard & base issues grid fetches
         fetch(`${API_BASE}/api/dashboard/summary`)
-            .then(res => res.json())
-            .then(data => setDashboardData(data))
-            .catch(err => console.error(err))
-
-        // Fetch issues
-        fetchIssues(); 
+            .then(r => r.json())
+            .then(d => setDashboardData(d))
+            .catch(e => console.error(e))
+        fetchIssues()
+        
+        // Poll scanner status every 3 seconds
+        checkStatus()
+        const interval = setInterval(checkStatus, 3000)
+        
+        return () => clearInterval(interval)
     }, [])
 
 
@@ -96,23 +117,6 @@ export default function IssuesPage() {
     })
 
     const grade = dashboardData ? dashboardData.grade : '-'
-    let colorClass = "text-muted-foreground"
-    let bgClass = "bg-muted/10"
-    let borderClass = "border-muted/20"
-
-    if (grade === 'A' || grade === 'B') {
-        colorClass = "text-green-500"
-        bgClass = "bg-green-500/10"
-        borderClass = "border-green-500/20"
-    } else if (grade === 'C') {
-        colorClass = "text-yellow-500"
-        bgClass = "bg-yellow-500/10"
-        borderClass = "border-yellow-500/20"
-    } else if (grade === 'D' || grade === 'F') {
-        colorClass = "text-red-500"
-        bgClass = "bg-red-500/10"
-        borderClass = "border-red-500/20"
-    }
 
     return (
         <main className="flex-1 overflow-y-auto p-8 bg-muted/10">
@@ -142,17 +146,8 @@ export default function IssuesPage() {
 
 
                     {/* Grade Summary Card Area */}
-                    <div className="flex items-center gap-6 mb-10">
-                        <div className={cn("flex items-center justify-center w-16 h-16 rounded-full border-4 shadow-sm", bgClass, borderClass)}>
-                            <span className={cn("text-3xl font-bold", colorClass)}>{grade}</span>
-                        </div>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-5xl font-light text-muted-foreground">{dashboardData ? dashboardData.score : '--'}</span>
-                        </div>
-                        <div className="flex flex-col ml-2">
-                            <span className="text-xl font-bold">Demo Organization</span>
-                            <span className="text-sm text-muted-foreground">demo.example.com</span>
-                        </div>
+                    <div className="mb-10 max-w-sm">
+                        <ScoreGrade score={dashboardData?.score ?? 0} grade={grade} />
                     </div>
 
                     <div className="flex items-end justify-between mb-6">

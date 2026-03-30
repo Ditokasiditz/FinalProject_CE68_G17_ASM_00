@@ -44,11 +44,24 @@ export default function UsersManagementPage() {
     setLoading(true);
     try {
       const res = await apiFetch(`${API_BASE}/api/users`);
-      if (!res.ok) throw new Error('Failed to fetch users');
+      if (res.status === 401) {
+        setError('Not authenticated — please log in again.');
+        console.error('fetchUsers: 401 Unauthorized');
+        return;
+      }
+      if (res.status === 403) {
+        setError('Access denied — admin privileges required.');
+        console.error('fetchUsers: 403 Forbidden');
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Server error (${res.status})`);
+      }
       setUsers(await res.json());
     } catch (err) {
-      setError('Could not load users');
-      console.error(err);
+      setError(err instanceof Error ? err.message : 'Could not load users');
+      console.error('fetchUsers error:', err);
     } finally {
       setLoading(false);
     }
@@ -95,7 +108,6 @@ export default function UsersManagementPage() {
           role: editRole,
           password: editPassword.trim() !== '' ? editPassword : undefined,
         }),
-        credentials: 'include',
       });
       const data = await res.json();
       if (res.ok) {
@@ -124,7 +136,6 @@ export default function UsersManagementPage() {
     try {
       const res = await apiFetch(`${API_BASE}/api/users/${deletingUser.id}`, {
         method: 'DELETE',
-        credentials: 'include',
       });
       if (res.ok) {
         setUsers(prev => prev.filter(u => u.id !== deletingUser.id));
@@ -153,6 +164,34 @@ export default function UsersManagementPage() {
       return matchesSearch && matchesRole;
     });
   }, [users, searchQuery, roleFilter]);
+
+  // ── Admin guard ────────────────────────────────────────────────
+  // Show the full-page Access Denied card if the user is not an admin.
+  // We wait until currentUser is resolved (not null) to avoid a flash.
+  if (currentUser && currentUser.role !== 'ADMIN') {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 p-4 font-sans text-center">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-red-100 max-w-md w-full">
+          <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
+          <p className="text-gray-500 mb-6">
+            You don&apos;t have permission to access this page.<br />
+            This area is restricted to administrators only.
+          </p>
+          <a
+            href="/dashboard"
+            className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors text-center"
+          >
+            Return to Dashboard
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto p-8 bg-muted/10 text-foreground relative">

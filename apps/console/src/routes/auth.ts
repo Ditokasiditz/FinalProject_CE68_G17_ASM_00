@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
-import { authenticateToken } from '../middlewares/auth.js';
+import { authenticateToken, AuthRequest } from '../middlewares/auth.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -65,9 +65,9 @@ router.post('/logout', (req, res) => {
 
 // @route   GET /api/auth/me
 // @desc    Get current logged in user info (fetches fresh data from DB including avatar)
-router.get('/me', authenticateToken, async (req: any, res) => {
+router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user!.userId;
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {

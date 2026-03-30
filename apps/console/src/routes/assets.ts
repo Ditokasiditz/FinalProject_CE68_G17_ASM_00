@@ -68,9 +68,8 @@ router.post('/:id/refresh', async (req: Request, res: Response) => {
     const { id } = req.params;
     
     try {
-        const assetId = id as string;
         const asset = await prisma.asset.findUnique({
-            where: { id: parseInt(assetId) }
+            where: { id: parseInt(String(id)) }
         });
 
         if (!asset || !asset.ipAddress) {
@@ -80,7 +79,7 @@ router.post('/:id/refresh', async (req: Request, res: Response) => {
         const shodanInfo = await getHostInfo(asset.ipAddress);
 
         const updatedAsset = await prisma.asset.update({
-            where: { id: parseInt(assetId) },
+            where: { id: parseInt(String(id)) },
             data: {
                 city: shodanInfo?.city || 'Not Found',
                 country: shodanInfo?.country_name || null,

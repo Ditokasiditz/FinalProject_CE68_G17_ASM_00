@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Tag, MessageSquare, X, Loader2 } from "lucide-react"
+import { ArrowLeft, MessageSquare, X, Loader2 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { API_BASE as API } from "@/lib/api"
@@ -305,10 +305,6 @@ export default function IssueFindingsPage() {
                                                                 <p className="text-sm font-semibold text-blue-500 hover:underline cursor-pointer">
                                                                     {finding.hostname}
                                                                 </p>
-                                                                <button className="text-xs text-blue-500 hover:underline flex items-center gap-0.5 mt-0.5">
-                                                                    <Tag className="w-2.5 h-2.5" />
-                                                                    Add Tag
-                                                                </button>
                                                             </div>
                                                         </div>
                                                     </TableCell>

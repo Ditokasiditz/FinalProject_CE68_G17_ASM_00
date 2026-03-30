@@ -86,6 +86,65 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
+// GET /api/issues/by-name/:name - returns a single issue by its title
+// IMPORTANT: must be defined BEFORE /:id so Express matches it first
+router.get('/by-name/:name', async (req: Request, res: Response) => {
+    try {
+        const title = String(req.params.name);
+        
+        const issue = await prisma.issue.findUnique({
+            where: { title },
+            include: {
+                assets: {
+                    include: {
+                        asset: {
+                            select: {
+                                id: true,
+                                hostname: true,
+                                ipAddress: true,
+                                type: true,
+                                isExposed: true,
+                            }
+                        }
+                    },
+                    orderBy: { lastObserved: 'desc' }
+                },
+                _count: { select: { assets: true } }
+            }
+        });
+
+        if (!issue) {
+            res.status(404).json({ error: 'Issue not found' });
+            return;
+        }
+
+        res.json({
+            id: issue.id,
+            title: issue.title,
+            description: issue.description,
+            severity: issue.severity,
+            impact: issue.impact,
+            factor: issue.factor,
+            createdAt: issue.createdAt,
+            updatedAt: issue.updatedAt,
+            findingsCount: issue._count.assets,
+            findings: issue.assets.map(ia => ({
+                assetId: ia.asset.id,
+                hostname: ia.asset.hostname,
+                ipAddress: ia.asset.ipAddress,
+                type: ia.asset.type,
+                isExposed: ia.asset.isExposed,
+                status: ia.status,
+                lastObserved: ia.lastObserved,
+                comment: ia.comment ?? null,
+            }))
+        });
+    } catch (error) {
+        console.error('Error fetching issue by name:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // GET /api/issues/:id - returns a single issue with full findings for the detail page
 router.get('/:id', async (req: Request, res: Response) => {
     try {
@@ -168,64 +227,6 @@ router.patch('/:issueId/findings/:assetId', async (req: Request, res: Response) 
         res.json({ comment: updated.comment });
     } catch (error) {
         console.error('Error saving comment:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// GET /api/issues/by-name/:name - returns a single issue by its title
-router.get('/by-name/:name', async (req: Request, res: Response) => {
-    try {
-        const title = String(req.params.name);
-        
-        const issue = await prisma.issue.findUnique({
-            where: { title },
-            include: {
-                assets: {
-                    include: {
-                        asset: {
-                            select: {
-                                id: true,
-                                hostname: true,
-                                ipAddress: true,
-                                type: true,
-                                isExposed: true,
-                            }
-                        }
-                    },
-                    orderBy: { lastObserved: 'desc' }
-                },
-                _count: { select: { assets: true } }
-            }
-        });
-
-        if (!issue) {
-            res.status(404).json({ error: 'Issue not found' });
-            return;
-        }
-
-        res.json({
-            id: issue.id,
-            title: issue.title,
-            description: issue.description,
-            severity: issue.severity,
-            impact: issue.impact,
-            factor: issue.factor,
-            createdAt: issue.createdAt,
-            updatedAt: issue.updatedAt,
-            findingsCount: issue._count.assets,
-            findings: issue.assets.map(ia => ({
-                assetId: ia.asset.id,
-                hostname: ia.asset.hostname,
-                ipAddress: ia.asset.ipAddress,
-                type: ia.asset.type,
-                isExposed: ia.asset.isExposed,
-                status: ia.status,
-                lastObserved: ia.lastObserved,
-                comment: ia.comment ?? null,
-            }))
-        });
-    } catch (error) {
-        console.error('Error fetching issue by name:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

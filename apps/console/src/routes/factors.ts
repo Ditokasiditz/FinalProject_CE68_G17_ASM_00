@@ -43,11 +43,10 @@ router.get('/', async (req: Request, res: Response) => {
             });
 
             factorIssues.forEach(issue => {
-                const count = 1;
-                if (issue.severity === 'Critical') severityCounts.critical += count;
-                else if (issue.severity === 'High') severityCounts.high += count;
-                else if (issue.severity === 'Medium') severityCounts.medium += count;
-                else if (issue.severity === 'Low') severityCounts.low += count;
+                if (issue.severity === 'Critical') severityCounts.critical += 1;
+                else if (issue.severity === 'High') severityCounts.high += 1;
+                else if (issue.severity === 'Medium') severityCounts.medium += 1;
+                else if (issue.severity === 'Low') severityCounts.low += 1;
                 
                 totalFindings += issue._count.assets;
                 totalImpact += (issue.impact ?? 0);

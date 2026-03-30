@@ -32,5 +32,13 @@ export const SCANNER_MODULES = [
     impact: 4.5,
     factor: 'Application Security',
     description: 'The target redirects to or through an insecure HTTP connection, exposing user traffic to potential interception or manipulation (Man-in-the-Middle).'
+  },
+  {
+    moduleName: 'session_cookie_httponly',
+    title: "Session Cookie Missing 'HttpOnly' Attribute",
+    severity: 'Medium',
+    impact: 5.0,
+    factor: 'Application Security',
+    description: "Session Cookie Missing 'HttpOnly' Attribute. The web application sets session cookies without the 'HttpOnly' flag, allowing potential attackers to steal session tokens via Cross-Site Scripting (XSS)."
   }
 ];

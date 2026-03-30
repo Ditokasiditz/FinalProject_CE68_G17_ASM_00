@@ -37,13 +37,6 @@ router.post('/run-all', (req: Request, res: Response) => {
     // Lock the scanner explicitly 
     isScanRunning = true; 
 
-    if (isScanRunning) {
-        return res.status(409).json({ error: 'Scan active already' });
-    }
-    
-    // Lock the scanner explicitly 
-    isScanRunning = true; 
-
     // 1) Acknowledge the request instantly so the browser doesn't hang
     res.status(202).json({ message: 'Scan started in background' });
 

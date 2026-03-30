@@ -64,3 +64,27 @@ export async function getDomainInfo(domain: string) {
     return null;
   }
 }
+
+export async function resolveHostname(hostname: string): Promise<string | null> {
+  if (!SHODAN_API_KEY) {
+    console.error('SHODAN_API_KEY is not set in environment variables');
+    return null;
+  }
+
+  try {
+    // /dns/resolve takes a comma-separated list of hostnames
+    const response = await fetch(`${SHODAN_BASE_URL}/dns/resolve?hostnames=${hostname}&key=${SHODAN_API_KEY}`);
+    
+    if (!response.ok) {
+      throw new Error(`Shodan API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    // Shodan returns a map: { "api.kmitl.ac.th": "161.246.x.x" }
+    // If it cannot be resolved, it returns { "hostname": null }
+    return data[hostname] || null;
+  } catch (error) {
+    console.error('Error resolving hostname from Shodan:', error);
+    return null;
+  }
+}

@@ -4,7 +4,8 @@ import React, { useState, useRef, useCallback, useEffect } from 'react'
 import {
   Search, Download, Copy, CheckCheck,
   Globe, Layers, AlertTriangle, Loader2, X,
-  ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight
+  ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,
+  DatabaseZap, CheckCircle2, ShieldAlert
 } from 'lucide-react'
 import { API_BASE } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -20,6 +21,7 @@ interface DiscoveryResult {
 }
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
 const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100]
 
@@ -30,6 +32,8 @@ export default function DiscoveryPage() {
   const [errorMsg, setErrorMsg] = useState('')
   const [filter, setFilter] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
+  const [savedCount, setSavedCount] = useState(0)
 
   // Pagination state
   const [pageSize, setPageSize] = useState(10)
@@ -54,6 +58,8 @@ export default function DiscoveryPage() {
     setErrorMsg('')
     setFilter('')
     setCurrentPage(1)
+    setSaveStatus('idle')
+    setSavedCount(0)
 
     try {
       const res = await fetch(`${API_BASE}/api/discovery/subdomains`, {
@@ -79,6 +85,39 @@ export default function DiscoveryPage() {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleDiscover()
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Save to Assets                                                       */
+  /* ------------------------------------------------------------------ */
+  const handleSaveAssets = async () => {
+    if (!result || saveStatus === 'saving') return
+
+    setSaveStatus('saving')
+    setSavedCount(0)
+
+    try {
+      const res = await fetch(`${API_BASE}/api/discovery/save-assets`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          domain: result.domain,
+          subdomains: result.subdomains.map(s => s.domain),
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || `Server returned ${res.status}`)
+      }
+
+      setSavedCount(data.saved as number)
+      setSaveStatus('saved')
+    } catch (err: unknown) {
+      console.error('[SaveAssets]', err)
+      setSaveStatus('error')
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -246,7 +285,7 @@ export default function DiscoveryPage() {
 
             {/* Stats row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <h2 className="text-xl font-bold text-white/90">
                   Results for{' '}
                   <span className="text-cyan-400 font-mono">{result.domain}</span>
@@ -254,6 +293,42 @@ export default function DiscoveryPage() {
                 <span className="px-3 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-xs font-bold">
                   {result.total} found
                 </span>
+
+                {/* ── Save to Assets button ── */}
+                {saveStatus === 'idle' && (
+                  <button
+                    id="save-assets-btn"
+                    onClick={handleSaveAssets}
+                    className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 hover:from-emerald-500/30 hover:to-teal-500/30 hover:border-emerald-400/60 hover:shadow-md hover:shadow-emerald-500/20"
+                  >
+                    <DatabaseZap className="w-3.5 h-3.5" />
+                    Save to Assets DB
+                  </button>
+                )}
+
+                {saveStatus === 'saving' && (
+                  <span className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-white/50">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Saving {result.total} assets…
+                  </span>
+                )}
+
+                {saveStatus === 'saved' && (
+                  <span className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    {savedCount} assets saved to DB
+                  </span>
+                )}
+
+                {saveStatus === 'error' && (
+                  <button
+                    onClick={() => setSaveStatus('idle')}
+                    className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-semibold bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all"
+                  >
+                    <ShieldAlert className="w-3.5 h-3.5" />
+                    Save failed — retry?
+                  </button>
+                )}
               </div>
 
               <div className="flex items-center gap-2">

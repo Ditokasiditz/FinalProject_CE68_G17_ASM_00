@@ -181,12 +181,12 @@ export default function DigitalFootprintPage() {
                             <td className="px-6 py-4 text-right">
                               <button
                                 onClick={() => handleRefresh(asset.id)}
-                                disabled={refreshing === asset.id || !asset.ipAddress}
+                                disabled={refreshing === asset.id}
                                 className={cn(
                                   "p-2 rounded-lg transition-all",
                                   refreshing === asset.id ? "bg-blue-500/20 text-blue-400" : "hover:bg-white/10 text-white/40 hover:text-white"
                                 )}
-                                title="Refresh from Shodan"
+                                title={asset.ipAddress ? "Refresh via Shodan Host API" : "Resolve IP via Shodan DNS, then enrich"}
                               >
                                 <RefreshCw className={cn("w-4 h-4", refreshing === asset.id && "animate-spin")} />
                               </button>

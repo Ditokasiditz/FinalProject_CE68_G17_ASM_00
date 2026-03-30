@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import {
   Search, Download, Copy, CheckCheck,
-  Globe, Layers, AlertTriangle, Loader2, X
+  Globe, Layers, AlertTriangle, Loader2, X,
+  ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight
 } from 'lucide-react'
 import { API_BASE } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -20,6 +21,8 @@ interface DiscoveryResult {
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100]
+
 export default function DiscoveryPage() {
   const [inputValue, setInputValue] = useState('')
   const [status, setStatus] = useState<Status>('idle')
@@ -27,7 +30,17 @@ export default function DiscoveryPage() {
   const [errorMsg, setErrorMsg] = useState('')
   const [filter, setFilter] = useState('')
   const [copied, setCopied] = useState<string | null>(null)
+
+  // Pagination state
+  const [pageSize, setPageSize] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1)
+
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Reset to page 1 whenever filter or pageSize changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [filter, pageSize, result])
 
   /* ------------------------------------------------------------------ */
   /*  Core fetch logic                                                     */
@@ -40,6 +53,7 @@ export default function DiscoveryPage() {
     setResult(null)
     setErrorMsg('')
     setFilter('')
+    setCurrentPage(1)
 
     try {
       const res = await fetch(`${API_BASE}/api/discovery/subdomains`, {
@@ -92,13 +106,22 @@ export default function DiscoveryPage() {
   }
 
   /* ------------------------------------------------------------------ */
-  /*  Filtered view                                                        */
+  /*  Filtered + paginated view                                            */
   /* ------------------------------------------------------------------ */
   const filtered = result
     ? result.subdomains.filter(s =>
         filter === '' || s.domain.toLowerCase().includes(filter.toLowerCase())
       )
     : []
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const safePage = Math.min(currentPage, totalPages)
+  const startIdx = (safePage - 1) * pageSize          // 0-based
+  const endIdx = Math.min(startIdx + pageSize, filtered.length)
+  const pageRows = filtered.slice(startIdx, endIdx)
+
+  // Global row number (so index column keeps counting across pages)
+  const globalStartNum = startIdx + 1
 
   /* ------------------------------------------------------------------ */
   /*  Render                                                               */
@@ -275,17 +298,17 @@ export default function DiscoveryPage() {
 
             {/* Table */}
             <div className="bg-[#0B1247]/40 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md shadow-2xl">
-              <div className="overflow-x-auto max-h-[60vh] overflow-y-auto">
+              <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
-                  <thead className="sticky top-0 z-10">
-                    <tr className="border-b border-white/5 bg-white/5 backdrop-blur-md">
-                      <th className="px-6 py-3 text-xs font-bold text-white/40 uppercase tracking-wider w-12">#</th>
+                  <thead>
+                    <tr className="border-b border-white/5 bg-white/5">
+                      <th className="px-6 py-3 text-xs font-bold text-white/40 uppercase tracking-wider w-16">#</th>
                       <th className="px-6 py-3 text-xs font-bold text-white/40 uppercase tracking-wider">Subdomain</th>
                       <th className="px-6 py-3 text-xs font-bold text-white/40 uppercase tracking-wider text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {filtered.length === 0 ? (
+                    {pageRows.length === 0 ? (
                       <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-white/40 italic">
                           {filter
@@ -294,13 +317,13 @@ export default function DiscoveryPage() {
                         </td>
                       </tr>
                     ) : (
-                      filtered.map((sub, idx) => (
+                      pageRows.map((sub, idx) => (
                         <tr
                           key={sub.domain}
                           className="hover:bg-white/5 transition-colors group"
                         >
                           <td className="px-6 py-3 text-white/20 text-xs font-mono">
-                            {idx + 1}
+                            {globalStartNum + idx}
                           </td>
                           <td className="px-6 py-3">
                             <span className="text-sm text-white/80 font-mono group-hover:text-cyan-300 transition-colors">
@@ -328,15 +351,144 @@ export default function DiscoveryPage() {
                 </table>
               </div>
 
-              {/* Footer count */}
-              <div className="px-6 py-3 border-t border-white/5 bg-white/3 flex items-center justify-between">
-                <span className="text-xs text-white/30">
-                  Showing <span className="text-white/60 font-semibold">{filtered.length}</span> of{' '}
-                  <span className="text-white/60 font-semibold">{result.total}</span> subdomains
+              {/* ── Pagination footer ── */}
+              <div className="px-5 py-3 border-t border-white/5 bg-white/[0.02] flex flex-col sm:flex-row items-center justify-between gap-3">
+
+                {/* Left: rows per page */}
+                <div className="flex items-center gap-2 text-xs text-white/40">
+                  <span>Rows per page:</span>
+                  <div className="relative">
+                    <select
+                      id="page-size-select"
+                      value={pageSize}
+                      onChange={e => setPageSize(Number(e.target.value))}
+                      className={cn(
+                        'appearance-none pl-3 pr-7 py-1.5 rounded-lg text-xs font-semibold text-white/70',
+                        'bg-white/5 border border-white/10 hover:bg-white/10',
+                        'focus:outline-none focus:ring-1 focus:ring-cyan-500/40 cursor-pointer transition-all'
+                      )}
+                    >
+                      {PAGE_SIZE_OPTIONS.map(n => (
+                        <option key={n} value={n} className="bg-[#0B1247] text-white">
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Custom caret */}
+                    <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-white/30 rotate-90 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Centre: range label */}
+                <span className="text-xs text-white/50 font-mono select-none">
+                  {filtered.length === 0
+                    ? '0 results'
+                    : `${startIdx + 1}–${endIdx} of ${filtered.length}`}
                 </span>
-                <span className="text-xs text-white/20 font-mono">
-                  Source: WhoisXML API
-                </span>
+
+                {/* Right: page navigation */}
+                <div className="flex items-center gap-1">
+                  {/* First page */}
+                  <button
+                    id="page-first-btn"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={safePage === 1}
+                    className={cn(
+                      'p-1.5 rounded-lg transition-all',
+                      safePage === 1
+                        ? 'text-white/15 cursor-not-allowed'
+                        : 'text-white/40 hover:text-white hover:bg-white/10'
+                    )}
+                    title="First page"
+                  >
+                    <ChevronsLeft className="w-4 h-4" />
+                  </button>
+
+                  {/* Prev page */}
+                  <button
+                    id="page-prev-btn"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={safePage === 1}
+                    className={cn(
+                      'p-1.5 rounded-lg transition-all',
+                      safePage === 1
+                        ? 'text-white/15 cursor-not-allowed'
+                        : 'text-white/40 hover:text-white hover:bg-white/10'
+                    )}
+                    title="Previous page"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  {/* Page number pills */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(p => {
+                      // Show first, last, current, and ±1 neighbours
+                      return (
+                        p === 1 ||
+                        p === totalPages ||
+                        Math.abs(p - safePage) <= 1
+                      )
+                    })
+                    .reduce<(number | 'ellipsis')[]>((acc, p, i, arr) => {
+                      if (i > 0 && p - (arr[i - 1] as number) > 1) acc.push('ellipsis')
+                      acc.push(p)
+                      return acc
+                    }, [])
+                    .map((item, i) =>
+                      item === 'ellipsis' ? (
+                        <span key={`ellipsis-${i}`} className="px-1 text-white/20 text-xs select-none">
+                          …
+                        </span>
+                      ) : (
+                        <button
+                          key={item}
+                          onClick={() => setCurrentPage(item as number)}
+                          className={cn(
+                            'min-w-[28px] h-7 px-1.5 rounded-lg text-xs font-semibold transition-all',
+                            item === safePage
+                              ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/30'
+                              : 'text-white/40 hover:text-white hover:bg-white/10'
+                          )}
+                        >
+                          {item}
+                        </button>
+                      )
+                    )}
+
+                  {/* Next page */}
+                  <button
+                    id="page-next-btn"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={safePage === totalPages}
+                    className={cn(
+                      'p-1.5 rounded-lg transition-all',
+                      safePage === totalPages
+                        ? 'text-white/15 cursor-not-allowed'
+                        : 'text-white/40 hover:text-white hover:bg-white/10'
+                    )}
+                    title="Next page"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  {/* Last page */}
+                  <button
+                    id="page-last-btn"
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={safePage === totalPages}
+                    className={cn(
+                      'p-1.5 rounded-lg transition-all',
+                      safePage === totalPages
+                        ? 'text-white/15 cursor-not-allowed'
+                        : 'text-white/40 hover:text-white hover:bg-white/10'
+                    )}
+                    title="Last page"
+                  >
+                    <ChevronsRight className="w-4 h-4" />
+                  </button>
+                </div>
+
               </div>
             </div>
 

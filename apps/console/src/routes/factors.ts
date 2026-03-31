@@ -20,7 +20,9 @@ router.get('/', async (req: Request, res: Response) => {
         });
 
         const result = factors.map(factor => {
-            const factorIssues = issues.filter(issue => issue.factor === factor.title);
+            const factorIssues = issues.filter(
+                issue => issue.factor === factor.title && issue._count.assets > 0
+            );
             
             const severityCounts = {
                 critical: 0,
@@ -49,7 +51,7 @@ router.get('/', async (req: Request, res: Response) => {
                 else if (issue.severity === 'Low') severityCounts.low += 1;
                 
                 totalFindings += issue._count.assets;
-                totalImpact += (issue.impact ?? 0);
+                totalImpact += (issue.impact ?? 0) * issue._count.assets;
             });
 
             return {

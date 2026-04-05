@@ -14,12 +14,15 @@ The project is structured as a **monorepo** employing a decoupled Client-Server 
 1. **Frontend Client (`apps/web-console`):** A modern React application that consumes internal backend REST APIs to display interactive dashboards and data tables.
 2. **Backend API (`apps/console`):** A Node.js Express server that handles business logic, proxies third-party APIs (for threat intel like Shodan or WhoIsXML), manages database queries, and handles authentication.
 
+![ASM Tech Stack Overview](file:///C:/Users/kasid/.gemini/antigravity/brain/f07af2c8-2df9-4be5-98f9-25a1355004ec/asm_tech_stack_overview_1775366042250.png)
+
 ### High-Level Data Flow:
 ```mermaid
 flowchart LR
     Client("Frontend App (Next.js)") <--> API("Backend API (Express)")
-    API <--> DB[("Database (SQLite via Prisma)")]
+    API <--> DB[("Database (PostgreSQL via Neon)")]
     API <--> Shodan("Third-Party APIs (Shodan, WhoisXML, etc.)")
+    API <--> Python("Python Scanning Module")
 ```
 
 ---
@@ -34,9 +37,10 @@ flowchart LR
 
 ### Backend `apps/console`
 - **Framework:** Node.js with Express.js (v5.x).
-- **Database ORM:** Prisma ORM. Currently configured to use SQLite (`dev.db`), simplifying local development.
+- **Database ORM:** Prisma ORM. Currently configured to use **PostgreSQL (via Neon)**.
+- **Scanning Engine:** Custom **Python scripts** for modular vulnerability assessments (SSL, HTTP, FTP, etc.).
 - **Authentication:** Custom JWT-based authentication relying on `jsonwebtoken` and `bcryptjs` with HTTP-only cookies managed via `cookie-parser`.
-- **Language:** TypeScript
+- **Language:** TypeScript & Python
 
 ---
 
@@ -64,11 +68,12 @@ apps/console/
 │   ├── lib/            # Shared utilities (e.g., shodan.ts for API proxies)
 │   ├── middlewares/    # Custom Express middlewares (e.g., auth checks)
 │   └── routes/         # Express route handlers
-│       ├── auth.js     # Login / Registration Logic
-│       ├── dashboard.js# Aggregated metrics delivery
-│       ├── discovery.js# Proxying to external threat feeds
-│       └── ...
-└── dev.db              # Local SQLite Database
+├── python_modules/     # NEW: Vulnerability Scanning Scripts
+│   ├── openssl_vuln.py # SSL/TLS vulnerability checks
+│   ├── redirect_http.py# HTTP to HTTPS redirect validation
+│   ├── ftp_anon.py     # Anonymous FTP access detection
+│   └── ...             # Other modular scanner scripts
+└── prisma/             # Database schema (PostgreSQL provider)
 ```
 
 ### Frontend: `apps/web-console`
@@ -89,4 +94,4 @@ apps/web-console/
 ```
 
 ## 5. Summary
-This project acts as a security operations nerve center, proxying requests securely through its Node.js backend using tools like the **Shodan API** while masking API keys. Its UI leverages modern **Next.js features** with performant, utility-first components representing real-world asset risks and issues.
+This project acts as a security operations nerve center, proxying requests securely through its Node.js backend using tools like the **Shodan API** while masking API keys. It now features a powerful **PostgreSQL-backed** data model hosted on **Neon** and an extensible **Python scanning engine** that performs active vulnerability assessments across various protocols. Its UI leverages modern **Next.js features** with performant, utility-first components representing real-world asset risks and issues.

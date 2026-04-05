@@ -48,5 +48,13 @@ export const SCANNER_MODULES = [
     impact: 5.0,
     factor: 'Application Security',
     description: "Session Cookie Missing 'Secure' Attribute. The web application sets session cookies without the 'Secure' flag, allowing the cookie to be transmitted over unencrypted HTTP connections, increasing the risk of Man-in-the-Middle (MITM) attacks."
+  },
+  {
+    moduleName: 'port22_ssh_open',
+    title: 'Exposed SSH Port (22) Detected',
+    severity: 'Medium',
+    impact: 5.0,
+    factor: 'Network Security',
+    description: 'The SSH service (port 22) is open and accessible from the internet. This could expose the system to brute-force attacks or exploitation of SSH vulnerabilities if not properly secured.'
   }
 ];

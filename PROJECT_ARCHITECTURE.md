@@ -14,12 +14,10 @@ The project is structured as a **monorepo** employing a decoupled Client-Server 
 1. **Frontend Client (`apps/web-console`):** A modern React application that consumes internal backend REST APIs to display interactive dashboards and data tables.
 2. **Backend API (`apps/console`):** A Node.js Express server that handles business logic, proxies third-party APIs (for threat intel like Shodan or WhoIsXML), manages database queries, and handles authentication.
 
-![ASM Tech Stack Overview](file:///C:/Users/kasid/.gemini/antigravity/brain/f07af2c8-2df9-4be5-98f9-25a1355004ec/asm_tech_stack_overview_1775366042250.png)
-
 ### High-Level Data Flow:
 ```mermaid
 flowchart LR
-    Client("Frontend App (Next.js)") <--> API("Backend API (Express)")
+    Client("Frontend App (Next.js)") <--> API("Backend API (Node.js/Express)")
     API <--> DB[("Database (PostgreSQL via Neon)")]
     API <--> Shodan("Third-Party APIs (Shodan, WhoisXML, etc.)")
     API <--> Python("Python Scanning Module")
